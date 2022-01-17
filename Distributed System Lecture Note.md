@@ -100,3 +100,13 @@ Solution: DFS in a graph - remember which page is crawled
 
 Use lock(), unlock() to make url fetch atomic 
 
+## Lecture3 GFS
+
+**Performance**: sharding
+
+Fault: **fault tolerance** - replication
+
+Tolerance, **replication**, inconsistency
+
+**Consistency**: pay for low **performance**.
+

@@ -137,3 +137,25 @@ Handle
 
 LOG, CHECKPOINT - disk: chunk and version number
 
+##### Read
+
+- File name offset -> master
+
+- Master sends chunk, list of servers, caches
+- Chunk -> chunk server, server send back chunk data
+
+##### Write
+
+###### Case1: No Primary
+
+- Find up-to-date replicas
+
+The master to find out the most up-to-date chunk - according to **version number.**
+
+- Pick a primary and others secondary servers
+- Increments the version number
+- Tells primary and secondary the version number
+
+Master crash handling: when reboot, master tells the server and wait for if their P.S. version# is the latest.
+
+###### Case2: Primary

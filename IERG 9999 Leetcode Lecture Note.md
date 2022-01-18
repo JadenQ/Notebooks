@@ -455,17 +455,20 @@ class Solution:
     def rotateRight(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
         if not head or not head.next or k < 1:
             return head
-        tail= head
+        pnt, tail = head, head
         count = 1
         while tail.next:
             tail = tail.next
             count = count + 1
         tail.next = head
-        pnt = tail
-        for _ in range(count - k % count):
+        print(count)
+        for _ in range(count - 1 - k % count):
             pnt = pnt.next
         result = pnt.next
         pnt.next = None
         return result
 ```
 
+1.正确计算count, 初始化count = 1 而不是0
+
+2.找到想要切割的位置和移动次数的关系 count -1 - k mod count

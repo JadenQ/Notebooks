@@ -358,7 +358,7 @@ class Solution:
         return head # what to return: dummy.next
 ```
 
-###### Solution:
+###### Solution
 
 双指针，pnt1在重复数据前等待，pnt2向前探索
 
@@ -383,5 +383,89 @@ class Solution:
                 pnt1 = pnt1.next
                 pnt2 = pnt2.next
         return dummy.next
+```
+
+###### Better Solution :+1:
+
+##to be continued##
+
+
+
+##### [61] 旋转链表
+
+###### 超时
+
+```python
+class Solution:
+    def rotateRight(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
+        if not head or not head.next or k < 1:
+            return head
+        # only two elements
+        if not head.next.next:
+            if k % 2 == 0:
+                return head
+            else:
+                tail = head.next
+                tail.next = head
+                head.next = None
+                return tail
+        for _ in range(k):
+            pnt = head
+            dummy = ListNode(-1)
+            dummy.next = head
+            while pnt.next.next:
+                pnt = pnt.next
+            dummy.next = pnt.next
+            pnt.next.next = head
+            pnt.next = None
+            head = dummy.next
+        return dummy.next
+```
+
+可以模仿链表长度为2时，成环操作。
+
+###### Mistake
+
+旋转方向错误
+
+```python
+class Solution:
+    def rotateRight(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
+        if not head or not head.next or k < 1:
+            return head
+        tail, pnt = head, head
+        count = 0
+        while tail.next:
+            tail = tail.next
+            count = count + 1
+        tail.next = head
+        for _ in range(k):
+            pnt = pnt.next
+        pnt2 = pnt
+        for _ in range(count):
+            pnt2 = pnt2.next
+        pnt2.next = None
+        return pnt
+```
+
+###### Solution
+
+```python
+class Solution:
+    def rotateRight(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
+        if not head or not head.next or k < 1:
+            return head
+        tail= head
+        count = 1
+        while tail.next:
+            tail = tail.next
+            count = count + 1
+        tail.next = head
+        pnt = tail
+        for _ in range(count - k % count):
+            pnt = pnt.next
+        result = pnt.next
+        pnt.next = None
+        return result
 ```
 

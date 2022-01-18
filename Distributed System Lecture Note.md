@@ -175,3 +175,9 @@ Primary detect the duplicate requests
 Disk damaged
 
 Not show data to readers
+
+###### Limitation
+
+Single master, not enough RAM
+
+Master is not automatically recover from crash, it takes too long.

@@ -280,3 +280,108 @@ class Solution:
         return None
 ```
 
+##### [83] 删除重复元素
+
+###### Mistakes
+
+```python
+class Solution:
+    def deleteDuplicates(self, head: ListNode) -> ListNode:
+        if head is None or head.next is None:
+            return head
+        pnt = head
+        pnt2 = ListNode(-1)
+        pnt2.next = head
+        while pnt1 != None:
+            if pnt1 == pnt2: # 我们需要比较链表的值
+                pnt1 = pnt1.next.next
+                pnt2 = pnt2.next.next
+            else:
+                pnt1 = pnt1.next
+                pnt2 = pnt2.next
+        return head
+```
+
+```python
+class Solution:
+    def deleteDuplicates(self, head: ListNode) -> ListNode:
+        if head is None or head.next is None:
+            return head
+        pnt = head
+        while pnt.next:
+            if pnt.val == pnt.next.val:
+                pnt = pnt.next.next # mistake
+            else:
+                pnt = pnt.next
+        return head
+```
+
+Solution:
+
+```python
+class Solution:
+    def deleteDuplicates(self, head: ListNode) -> ListNode:
+        if head is None or head.next is None:
+            return head
+        pnt = head
+        while pnt.next:
+            if pnt.val == pnt.next.val:
+                pnt.next = pnt.next.next #指针跳转
+            else:
+                pnt = pnt.next
+        return head
+```
+
+##### [82] 删除重复元素II
+
+###### Mistake
+
+```python
+class Solution:
+    def deleteDuplicates(self, head: ListNode) -> ListNode:
+        if not head or not head.next:
+            return head
+        pnt1 = ListNode(-1)
+        pnt1.next = head
+        pnt2 = pnt1.next
+        dummy = pnt1
+        dummy.next = pnt1.next
+        while pnt2.next:
+            if pnt1.next.val == pnt2.next.val:
+                while pnt2.val == pnt2.next.val:
+                    pnt2 = pnt2.next
+                pnt1.next = pnt2.next
+                pnt2 = pnt2.next
+            else:
+                pnt1 = pnt1.next
+                pnt2 = pnt2.next
+        return head # what to return: dummy.next
+```
+
+###### Solution:
+
+双指针，pnt1在重复数据前等待，pnt2向前探索
+
+```python
+class Solution:
+    def deleteDuplicates(self, head: ListNode) -> ListNode:
+        if not head or not head.next:
+            return head
+        pnt1 = ListNode(-1)
+        pnt1.next = head
+        pnt2 = pnt1.next
+        dummy = pnt1
+        dummy.next = pnt1.next
+
+        while pnt2 and pnt2.next:
+            if pnt1.next.val == pnt2.next.val:
+                while pnt2.next and pnt2.val == pnt2.next.val:
+                    pnt2 = pnt2.next
+                pnt1.next = pnt2.next
+                pnt2 = pnt2.next
+            else:
+                pnt1 = pnt1.next
+                pnt2 = pnt2.next
+        return dummy.next
+```
+

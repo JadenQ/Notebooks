@@ -116,9 +116,24 @@ Bad replication design
 
 #### GFS
 
+##### Background
+
 Goal: big and fast, global reusable, sharding, automatic recovery
 
 Single data center, internal use, big file sequential read and write access.
 
 Doesn't guarantee correct returned data, web search not so strict about the right data. 
+
+##### Master Data
+
+File name: array of chunk handles (non-volatile, nv)
+
+Handle
+
+- list of chunk servers (v) - master for reboot 
+- version number - to disk (nv)
+- primary (v)
+- lease expiration (v)
+
+LOG, CHECKPOINT - disk: chunk and version number
 

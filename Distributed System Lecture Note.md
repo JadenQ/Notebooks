@@ -110,3 +110,15 @@ Tolerance, **replication**, inconsistency
 
 **Consistency**: pay for low **performance**.
 
+#### Problems
+
+Bad replication design
+
+#### GFS
+
+Goal: big and fast, global reusable, sharding, automatic recovery
+
+Single data center, internal use, big file sequential read and write access.
+
+Doesn't guarantee correct returned data, web search not so strict about the right data. 
+

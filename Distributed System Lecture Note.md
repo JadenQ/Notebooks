@@ -154,8 +154,24 @@ The master to find out the most up-to-date chunk - according to **version number
 
 - Pick a primary and others secondary servers
 - Increments the version number
-- Tells primary and secondary the version number
+- Tells primary and secondary the version number, give the primary version a ***LEASE***
 
 Master crash handling: when reboot, master tells the server and wait for if their P.S. version# is the latest.
 
+Primary picks 
+
 ###### Case2: Primary
+
+Primary picks offset of all replicas and told them to write at offset. Chunk is full or not.
+
+Split brain - network partition: master talk to client but client cannot talk to master.
+
+Primary lease expires and will simply stop executing client requests it ignore or reject client request after the lease expired and therefore if master cant talk to the primary, it has to wait for the lease expires.
+
+###### Further implements
+
+Primary detect the duplicate requests
+
+Disk damaged
+
+Not show data to readers

@@ -534,4 +534,104 @@ class Solution:
         return cur
 ```
 
-[]
+##### [143] 重排链表:+1:
+
+1.找到**链表中点**
+
+2.**反转**右半部分链表
+
+3.元素依次**merge**两个链表
+
+###### Mistake
+
+对偶数个输入time limit exceeded, 对奇数个输入正确。
+
+中点的计算问题：fast,slow双指针结束时while判断条件/反转开始的节点选择(pnt1)。
+
+```python
+class Solution:
+    def reorderList(self, head: ListNode) -> None:
+        """
+        Do not return anything, modify head in-place instead.
+        """
+        if head or head.next:
+            fast, slow = head, head
+            while fast and fast.next: # IMPORTANT
+                fast = fast.next.next
+                slow = slow.next
+            # middle point of the list
+
+            pnt1 = slow
+
+            # reverse the right half part of list
+            pnt1 = self.reverseList(pnt1)
+            print('pnt1:', pnt1)
+            self.mergeList(head, pnt1)
+    # reverse the list
+    def reverseList(self, head: ListNode) -> ListNode:
+        # 使用迭代
+        pre = head
+        cur = None
+        while pre != None:
+            # 保存Pre.next
+            next = pre.next
+            # 反转
+            pre.next = cur
+            cur = pre
+            pre = next
+        return cur
+    # merge the 2 list in one by one manner
+    def mergeList(self, l1:ListNode, l2:ListNode):
+        while l1 and l2:
+            temp1, temp2 = l1.next, l2.next
+
+            l1.next = l2
+            l1 = temp1
+
+            l2.next = l1
+            l2 = temp2
+```
+
+###### Solution
+
+```python
+class Solution:
+    def reorderList(self, head: ListNode) -> None:
+        """
+        Do not return anything, modify head in-place instead.
+        """
+        if head or head.next:
+            fast, slow = head, head
+            while fast.next and fast.next.next:
+                fast = fast.next.next
+                slow = slow.next
+            # middle point of the list
+            pnt1 = slow
+            # reverse the right half part of list
+            pnt1 = self.reverseList(pnt1)
+            self.mergeList(head, pnt1)
+    # reverse the list
+    def reverseList(self, head: ListNode) -> ListNode:
+        # 使用迭代
+        pre = head
+        cur = None
+        while pre != None:
+            # 保存Pre.next
+            next = pre.next
+            # 反转
+            pre.next = cur
+            cur = pre
+            pre = next
+        return cur
+    # merge the 2 list in one by one manner
+    def mergeList(self, l1:ListNode, l2:ListNode):
+        while l1 and l2:
+            temp1, temp2 = l1.next, l2.next
+
+            l1.next = l2
+            l1 = temp1
+
+            l2.next = l1
+            l2 = temp2
+```
+

@@ -472,3 +472,66 @@ class Solution:
 1.正确计算count, 初始化count = 1 而不是0
 
 2.找到想要切割的位置和移动次数的关系 count -1 - k mod count
+
+##### [234] 回文链表
+
+###### 1.存储到数组中
+
+O(n), O(n). 将链表存到数组里面进行验证。
+
+```python
+class Solution:
+    def isPalindrome(self, head: ListNode) -> bool:
+        if not head.next:
+            return True
+        pnt = head
+        list = []
+        while pnt:
+            list.append(pnt.val)
+            pnt = pnt.next
+        return list == lst[::-1]
+```
+
+###### 2.快慢指针
+
+1. fast = 2 * slow, fast走到链表尾部时，slow走到中间
+2. slow停在中间，反转后面部分的链表
+3. pnt从head开始，slow从中间同时出发，验证是否一致
+
+```
+class Solution:
+    def isPalindrome(self, head: ListNode) -> bool:
+        if not head.next:
+            return True
+        fast, slow, pnt2 = head, head, head
+        while fast.next:
+            fast = fast.next.next
+            slow = slow.next
+        # slow 在中间, 赋给pnt1
+        pnt1 = slow.next
+        # 反转后半部分
+        pnt1 = reverseList(pnt1)
+        while pnt1:
+            pnt1 = pnt1.next
+            pnt2 = pnt2.next
+            if pnt1.val != pnt2.val:
+                return False
+        return True
+
+
+
+    def reverseList(self, head: ListNode) -> ListNode:
+        # 使用迭代
+        pre = head
+        cur = None
+        while pre != None:
+            # 保存Pre.next
+            next = pre.next
+            # 反转
+            pre.next = cur
+            cur = pre
+            pre = next
+        return cur
+
+```
+

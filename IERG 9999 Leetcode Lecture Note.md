@@ -498,28 +498,28 @@ class Solution:
 2. slow停在中间，反转后面部分的链表
 3. pnt从head开始，slow从中间同时出发，验证是否一致
 
-```
+```python
 class Solution:
     def isPalindrome(self, head: ListNode) -> bool:
         if not head.next:
             return True
+        if not head.next.next:
+            if head.val == head.next.val:
+                return True
+            else: return False
         fast, slow, pnt2 = head, head, head
-        while fast.next:
+        while fast and fast.next:
             fast = fast.next.next
             slow = slow.next
-        # slow 在中间, 赋给pnt1
-        pnt1 = slow.next
+        pnt1 = slow
         # 反转后半部分
-        pnt1 = reverseList(pnt1)
+        pnt1 = self.reverseList(pnt1)
         while pnt1:
-            pnt1 = pnt1.next
-            pnt2 = pnt2.next
             if pnt1.val != pnt2.val:
                 return False
+            pnt1 = pnt1.next
+            pnt2 = pnt2.next
         return True
-
-
-
     def reverseList(self, head: ListNode) -> ListNode:
         # 使用迭代
         pre = head
@@ -532,6 +532,6 @@ class Solution:
             cur = pre
             pre = next
         return cur
-
 ```
 
+[]

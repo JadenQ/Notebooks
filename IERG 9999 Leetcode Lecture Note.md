@@ -635,3 +635,112 @@ class Solution:
             l2 = temp2
 ```
 
+##### [203] 移除链表元素
+
+###### 1.两个指针
+
+利用两个指针在处理全相等的链表时并不优雅
+
+```python
+class Solution:
+    def removeElements(self, head: ListNode, val: int) -> ListNode:
+        dummy = ListNode(-1)
+        dummy.next = head
+        pre = dummy
+        while head:
+            print('pre:', pre.val)
+            print('head:',head.val)
+            # 判断节点数值
+            if head.val == val:
+                while head and head.next.val == val:
+                	head = head.next
+                pre.next = head.next
+            # 最后一个元素
+            if head is None:
+                return dummy.next
+            # move on the 2 points
+            head = head.next
+            pre = pre.next
+        return dummy.next
+```
+
+###### 2.一个指针
+
+```python
+class Solution:
+    def removeElements(self, head: ListNode, val: int) -> ListNode:
+        dummy = pnt = ListNode(-1)
+        dummy.next = head
+        pnt.next = head
+        while pnt.next:
+            if pnt.next.val == val:
+                pnt.next = pnt.next.next
+            else:
+                pnt = pnt.next
+        return dummy.next
+```
+
+##### [19] 删除链表的倒数第N个节点
+
+###### 1.反转链表
+
+1.反转过来
+
+2.删除
+
+3.翻回去
+
+```python
+class Solution:
+    def removeNthFromEnd(self, head: ListNode, n: int) -> ListNode:
+        if not head.next:
+            if n == 1:
+                return None
+            else: return head
+        new_head = self.reverseList(head)
+        dummy = ListNode(-1)
+        dummy.next = new_head
+        pnt = dummy
+        for _ in range(n-1):
+            pnt = pnt.next
+
+        print('pnt:',pnt.val)
+        pnt.next = pnt.next.next
+        return self.reverseList(dummy.next)
+
+    def reverseList(self, head: ListNode) -> ListNode:
+        # 使用迭代
+        pre = head
+        cur = None
+        while pre != None:
+            # 保存Pre.next
+            next = pre.next
+            # 反转
+            pre.next = cur
+            cur = pre
+            pre = next
+        return cur
+```
+
+###### 2.数出要移除的位置
+
+需要对链表遍历两次：第一次得到总长度L，第二次移除L-n
+
+```python
+class Solution:
+    def removeNthFromEnd(self, head: ListNode, n: int) -> ListNode:
+        count = 0
+        pnt = head
+        while pnt:
+            pnt = pnt.next
+            count = count + 1
+        dummy = ListNode(-1)
+        dummy.next = head
+        pnt = dummy
+        for _ in range(count - n):
+            pnt = pnt.next
+        print('count:', count, 'pnt:', pnt.val)
+        pnt.next = pnt.next.next
+        return dummy.next
+```
+

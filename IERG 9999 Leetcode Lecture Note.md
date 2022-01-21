@@ -923,7 +923,7 @@ class Solution:
   期望结果:[1,2,3,4,5,7,8]
   ```
 
-![1642755292854](D:\document\CUHK\Notebooks\pics\1642755292854.png)
+![1642755292854](\pics\1642755292854.png)
 
 ###### Insights: 排序算法总结 :bookmark:
 

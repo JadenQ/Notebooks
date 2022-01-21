@@ -820,6 +820,8 @@ class Solution:
 
 ###### Solution： 归并排序 :+1:
 
+![Picture2.png](https://pic.leetcode-cn.com/8c47e58b6247676f3ef14e617a4686bc258cc573e36fcf67c1b0712fa7ed1699-Picture2.png)
+
 - Goal :goal_net:: $O(n·logn)$ in time, Constant in memory
 
 - Mistake: 超出最多递归次数。
@@ -941,3 +943,4 @@ class Solution:
 
 ###### https://blog.csdn.net/pange1991/article/details/85460755
 
+[876] 

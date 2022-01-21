@@ -739,8 +739,205 @@ class Solution:
         pnt = dummy
         for _ in range(count - n):
             pnt = pnt.next
-        print('count:', count, 'pnt:', pnt.val)
         pnt.next = pnt.next.next
         return dummy.next
 ```
+
+###### 比较
+
+方法速度差不多
+
+##### [237] 删除链表中的节点
+
+不能回溯上一个节点进行连接，但可以将下一个节点的值赋值给当前元素。
+
+```python
+class Solution:
+    def deleteNode(self, node):
+        """
+        :type node: ListNode
+        :rtype: void Do not return anything, modify node in-place instead.
+        """
+        node.val = node.next.val
+        node.next = node.next.next
+```
+
+##### [148] 排序链表
+
+###### Mistake
+
+根据链表中的值升序排序
+
+```python
+class Solution:
+    def sortList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        if not head or head.next:  # 应该是 not head.next
+            return head
+
+        dummy = ListNode(-1)
+        dummy.next = head
+        pnt1 = dummy.next
+        pnt2 = head.next
+        while pnt1.next:
+            while pnt2:
+                if pnt2.val < pnt1.val:
+                    temp = pnt2.val
+                    pnt2.val = pnt1.val
+                    pnt1.val = temp
+                pnt2 = pnt2.next
+            pnt1 = pnt1.next
+            pnt2 = pnt1.next
+
+        return dummy.next
+```
+
+双指针，交换。
+
+###### Time Limit Exceed
+
+```python
+class Solution:
+    def sortList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        if not head or not head.next: 
+            return head
+
+        dummy = ListNode(-1)
+        dummy.next = head
+        pnt1 = dummy.next
+        pnt2 = head.next
+        while pnt1.next:
+            while pnt2:
+                if pnt2.val < pnt1.val:
+                    temp = pnt2.val
+                    pnt2.val = pnt1.val
+                    pnt1.val = temp
+                pnt2 = pnt2.next
+            pnt1 = pnt1.next
+            pnt2 = pnt1.next
+
+        return dummy.next
+```
+
+###### Solution： 归并排序 :+1:
+
+- Goal :goal_net:: $O(n·logn)$ in time, Constant in memory
+
+- Mistake: 超出最多递归次数。
+
+```python
+class Solution:
+    def sortList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        if not head or not head.next:
+            return head
+        # 分: left and right
+        mid = self.midNode(head)
+            # 2 nodes only condition
+        if not mid.next:
+            return mid
+        #########################################
+        left = self.sortList(head)
+        right = self.sortList(mid.next)
+        mid.next = None
+        #########################################
+        # 合
+        return self.mergeSort(left, right)
+    # 分
+    def midNode(self, head: ListNode) -> ListNode:
+        pnt = ListNode(-1, head)
+        slow, fast = pnt, pnt
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        return slow
+    # 治之
+    def mergeSort(self, left: ListNode, right: ListNode) -> ListNode:
+        new_head = dummy = ListNode(-1)
+        while left and right:
+            # 治： if left is smaller in value, put on the left side
+            if left.val < right.val:
+                new_head.next = left
+                left = left.next
+            else:
+                new_head.next = right
+                right = right.next
+            # add new nodes to the new head
+            new_head = new_head.next
+            # print('||left||:', left, '||right||:', right, '||new_head||:',new_head)
+        new_head.next = left if left else right
+        return dummy.next
+```
+
+- Solution
+
+  前半部分要记得cut.
+
+```python
+class Solution:
+    def sortList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        if not head or not head.next:
+            return head
+        # 分: left and right
+        mid = self.midNode(head)
+            # 2 nodes only condition
+        if not mid.next:
+            return mid
+        #########################################
+        right = self.sortList(mid.next)
+        mid.next = None
+        left = self.sortList(head)
+        #########################################
+        # 合
+        return self.mergeSort(left, right)
+    # 分
+    def midNode(self, head: ListNode) -> ListNode:
+        pnt = ListNode(-1, head)
+        slow, fast = pnt, pnt
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        return slow
+    # 治之
+    def mergeSort(self, left: ListNode, right: ListNode) -> ListNode:
+        new_head = pnt = ListNode(-1)
+        while left and right:
+            # 治： if left is smaller in value, put on the left side
+            if left.val < right.val:
+                new_head.next = left
+                left = left.next
+            else:
+                new_head.next = right
+                right = right.next
+            # add new nodes to the new head
+            new_head = new_head.next
+
+        new_head.next = left if left else right
+        return pnt.next
+
+```
+
+- Details
+
+  ```
+  测试用例:[4,2,3,1,5,8,7]
+  测试结果:[1,2,3,4,5,7,8]
+  期望结果:[1,2,3,4,5,7,8]
+  ```
+
+![1642755292854](D:\document\CUHK\Notebooks\pics\1642755292854.png)
+
+###### Insights: 排序算法总结 :bookmark:
+
+| **排序算法**     | **平均时间复杂度** | **最坏时间复杂度** | **最好时间复杂度** | **空间复杂度** | **稳定性** |
+| ---------------- | ------------------ | ------------------ | ------------------ | -------------- | ---------- |
+| **冒泡排序**     | O(n²)              | O(n²)              | O(n)               | O(1)           | 稳定       |
+| **直接选择排序** | O(n²)              | O(n²)              | O(n)               | O(1)           | 不稳定     |
+| **直接插入排序** | O(n²)              | O(n²)              | O(n)               | O(1)           | 稳定       |
+| **快速排序**     | O(nlogn)           | O(n²)              | O(nlogn)           | O(nlogn)       | 不稳定     |
+| **堆排序**       | O(nlogn)           | O(nlogn)           | O(nlogn)           | O(1)           | 不稳定     |
+| **希尔排序**     | O(nlogn)           | O(ns)              | O(n)               | O(1)           | 不稳定     |
+| **归并排序**     | O(nlogn)           | O(nlogn)           | O(nlogn)           | O(n)           | 稳定       |
+| **计数排序**     | O(n+k)             | O(n+k)             | O(n+k)             | O(n+k)         | 稳定       |
+| **基数排序**     | O(N*M)             | O(N*M)             | O(N*M)             | O(M)           | 稳定       |
+
+###### https://blog.csdn.net/pange1991/article/details/85460755
 

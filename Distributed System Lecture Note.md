@@ -181,3 +181,42 @@ Not show data to readers
 Single master, not enough RAM
 
 Master is not automatically recover from crash, it takes too long.
+
+### Lecture4 Primary Backup Replication
+
+#### Failures
+
+Failure - stop - fault: just stop or CPU temperature is too high
+
+Bug
+
+Application specific replication.
+
+#### Two Ideas
+
+##### State transfer
+
+More robust in multicore parallelism.
+
+Expensive, create a new replica.
+
+##### Replicated state machine
+
+Operation is smaller than the server
+
+What exact state: cut over, P/B sync, anomalies.
+
+#### VMware FT
+
+Fault tolerance and the VMM talks between each other using **logging channel**.
+
+##### Non-deterministic events
+
+Inputs - packet - data + interrupt
+
+Multi-core parallelism  - weird instruction
+
+Log entry + instruction# + type + data
+
+
+

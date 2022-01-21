@@ -941,6 +941,17 @@ class Solution:
 | **计数排序**     | O(n+k)             | O(n+k)             | O(n+k)             | O(n+k)         | 稳定       |
 | **基数排序**     | O(N*M)             | O(N*M)             | O(N*M)             | O(M)           | 稳定       |
 
-###### https://blog.csdn.net/pange1991/article/details/85460755
+https://blog.csdn.net/pange1991/article/details/85460755
 
-[876] 
+##### [876] 链表的中间节点
+
+```python
+class Solution:
+    def middleNode(self, head: ListNode) -> ListNode:
+        fast = slow = head
+        while fast and fast.next:
+            fast = fast.next.next
+            slow = slow.next
+        return slow
+```
+

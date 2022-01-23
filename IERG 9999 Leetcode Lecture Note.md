@@ -955,3 +955,178 @@ class Solution:
         return slow
 ```
 
+##### [86] 分隔链表
+
+###### Solution
+
+等效化问题： 等于把数按x分为两份，小于x一份，大于x一份，最后拼接。
+
+###### Mistake
+
+有的Large链表尾部和其他元素相连，需要记得cut，否则会连接回去形成闭环循环。
+
+###### 无限循环错误:o:
+
+```python
+class Solution:
+    def partition(self, head: ListNode, x: int) -> ListNode:
+        if not head or not head.next:
+            return head
+        small = ListNode(-1)
+        large = ListNode(-1)
+        small_dummy = small
+        large_dummy = large
+        while head:
+            if head.val < x:
+                small.next = head
+                small = small.next
+            else:
+                large.next = head
+                large = large.next
+            head = head.next
+        large.next = None #######容易忘记，造成超时#######
+        small.next = large_dummy.next
+        return small_dummy.next  
+```
+
+##### [147] 对链表进行插入排序
+
+###### 排序算法recap:bookmark:
+
+```python
+class Solution:
+    def insertionSortList(self, head: ListNode) -> ListNode:
+        if not head or not head.next:
+            return head
+
+        dummy = ListNode(-1, head)
+        sorted = head
+        curr = sorted.next
+        while curr:
+            if curr.val >= sorted.val:
+                sorted = sorted.next
+            else:
+                # move prev 用来定位插入的位置
+                prev = dummy
+                while prev.next.val <= curr.val:
+                    prev = prev.next
+                temp1 = prev.next
+                temp2 = curr.next
+                prev.next = curr
+                curr.next = temp1
+                sorted.next = temp2
+            curr = sorted.next
+        return dummy.next
+```
+
+##### [138] 复制带随机指针的链表
+
+###### Mistake
+
+Node with label 7 was not copied but a reference to the original one.
+
+```python
+class Solution:
+    def copyRandomList(self, head: 'Optional[Node]') -> 'Optional[Node]':
+        if not head or not head.next:
+            return head
+        pnt = head
+        index_list = []
+        while pnt:
+            index_list.append(pnt.random)
+            pnt = pnt.next
+        dummy = ListNode(-1)
+        dummy.next = head
+        count = 0
+        while pnt:
+            pnt.random = index_list[count]
+            pnt = pnt.next
+        return dummy.next
+```
+
+与之前题目声明了ListNode不同，题目中每个为Node.
+
+###### 1.后方插入新Node
+
+每个原指针后面插入新的node，方便构建新的random指针，然后拆除旧的next指针
+
+```python
+class Solution:
+    def copyRandomList(self, head: 'Optional[Node]') -> 'Optional[Node]':
+        if not head:
+            return head
+        pnt = head
+        while pnt:
+            new_node = Node(pnt.val, pnt.next,None) # leave Node.random
+            pnt.next = new_node # connect
+            pnt = new_node.next # move on
+        # new connection: random 完成random连接构建
+        pnt = head
+        while pnt:
+            if pnt.random:
+                pnt.next.random = pnt.random.next
+            pnt = pnt.next.next
+
+        # print('head:', head.val, 'head.next:', head.next.val)
+        dummy = Node(-1, head, None)
+        cur = dummy
+        pnt = head
+        # 解除原本的next连接，构建新的next连接
+        while pnt:
+            cur.next = pnt.next
+            pnt = pnt.next.next
+            cur = cur.next
+        return dummy.next
+```
+
+###### 2.哈希表:+1:
+
+##### [24] 两两交换节点
+
+###### Mistake
+
+只使用两个指针容易造成指针指向混淆，成环而无限循环
+
+###### 无限循环错误:o:
+
+```python
+class Solution:
+    def swapPairs(self, head: ListNode) -> ListNode:
+        if not head or not head.next:
+            return head
+        dummy = ListNode(-1,head)
+        cur = dummy
+        pre = head.next
+        print('cur:', cur.val, 'pre:',pre.val)
+        while pre.next:
+            cur.next.next = pre.next
+            pre.next = cur.next
+            cur.next = pre
+            cur = cur.next.next
+            pre = pre.next.next
+            print('cur:', cur.val, 'pre:',pre.val)
+        return dummy.next
+```
+
+###### Solution
+
+用一个指针推进，在while循环时设置两个指针调整位置。
+
+```python
+class Solution:
+    def swapPairs(self, head: ListNode) -> ListNode:
+        dummy = ListNode(0)
+        dummy.next = head
+        temp = dummy
+        while temp.next and temp.next.next:
+            cur = temp.next
+            pre = temp.next.next
+            temp.next = pre
+            cur.next = pre.next
+            pre.next = cur
+            temp = cur
+        return dummy.next
+```
+
+
+

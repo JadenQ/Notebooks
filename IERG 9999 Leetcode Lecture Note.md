@@ -385,7 +385,7 @@ class Solution:
         return dummy.next
 ```
 
-###### Better Solution :+1:
+###### TODO:play_or_pause_button:：Better Solution
 
 ##to be continued##
 
@@ -929,6 +929,8 @@ class Solution:
 
 ###### Insights: 排序算法总结 :bookmark:
 
+###### TODO:play_or_pause_button::排序算法的实现与分析
+
 | **排序算法**     | **平均时间复杂度** | **最坏时间复杂度** | **最好时间复杂度** | **空间复杂度** | **稳定性** |
 | ---------------- | ------------------ | ------------------ | ------------------ | -------------- | ---------- |
 | **冒泡排序**     | O(n²)              | O(n²)              | O(n)               | O(1)           | 稳定       |
@@ -944,6 +946,8 @@ class Solution:
 https://blog.csdn.net/pange1991/article/details/85460755
 
 ##### [876] 链表的中间节点
+
+###### 常用:bookmark:
 
 ```python
 class Solution:
@@ -1080,6 +1084,8 @@ class Solution:
 ```
 
 ###### 2.哈希表:+1:
+
+###### TODO:play_or_pause_button:
 
 ##### [24] 两两交换节点
 

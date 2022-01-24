@@ -949,6 +949,8 @@ https://blog.csdn.net/pange1991/article/details/85460755
 
 ###### 常用:bookmark:
 
+得到中点往后半部分
+
 ```python
 class Solution:
     def middleNode(self, head: ListNode) -> ListNode:
@@ -958,6 +960,25 @@ class Solution:
             slow = slow.next
         return slow
 ```
+
+得到中点前半部分
+
+```python
+class Solution:
+    def middleNode(self, head: ListNode) -> ListNode:
+        if not head or not head.next:
+            return head
+        fast = slow = head
+
+        while fast and fast.next:
+            pre = slow
+            fast = fast.next.next
+            slow = slow.next
+        pre.next = None
+        return head
+```
+
+
 
 ##### [86] 分隔链表
 
@@ -1135,4 +1156,187 @@ class Solution:
 ```
 
 
+
+##### [707] 设计链表
+
+###### Problem
+
+内存使用很少，但是速度太慢。
+
+```python
+class ListNode:
+
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+
+class MyLinkedList:
+
+    def __init__(self):
+        self.size = 0
+        self.head = ListNode(0)
+
+    def get(self, index: int) -> int:
+        if (self.size - 1) < index or index < 0:
+            return -1
+        count = 0
+        pnt = self.head
+        while pnt:
+            if count == index:
+                return pnt.next.val
+            pnt = pnt.next
+            count = count + 1
+
+    def addAtHead(self, val: int) -> None:
+        new_node = ListNode(val)
+        temp = self.head.next
+        self.head.next = new_node
+        new_node.next = temp
+        self.size += 1
+
+    def addAtTail(self, val: int) -> None:
+        new_node = ListNode(val)
+        temp = self.head
+        while temp.next:
+            temp = temp.next
+        temp.next = new_node
+        new_node.next = None
+        self.size += 1
+
+    def addAtIndex(self, index: int, val: int) -> None:
+        new_node = ListNode(val)
+        pnt = self.head
+        count = 0
+        print('size is: ',self.size)
+        if index < 0:
+            self.addAtHead(val)
+        if index >= 0 and index < self.size:
+            while pnt:
+                if count == index:
+                    temp = pnt.next
+                    pnt.next = new_node
+                    new_node.next = temp
+                pnt = pnt.next
+                count = count + 1
+            self.size += 1
+        if index == self.size:
+            self.addAtTail(val)
+
+    def deleteAtIndex(self, index: int) -> None:
+        pnt = self.head
+        count = 0
+        if index >= 0 and index < self.size:
+            while pnt:
+                if count == index:
+                    pnt.next = pnt.next.next
+                    self.size -= 1
+                count = count + 1
+                pnt = pnt.next
+```
+
+##### [328] 奇偶链表
+
+###### Mistake
+
+```python
+class Solution:
+    def oddEvenList(self, head: ListNode) -> ListNode:
+        if not head or not head.next:
+            return head
+        pnt = head
+        odd = ListNode(-1, head)
+        even = ListNode(-1, head)
+        odd_dummy = odd
+        even_dummy = even
+        while pnt and pnt.next:
+            odd.next = pnt
+            even.next = pnt.next
+            odd = odd.next
+            even = even.next
+            pnt = pnt.next.next
+        even.next = None
+        odd.next = even_dummy.next
+        return odd_dummy.next
+```
+
+###### TODO:play_or_pause_button:
+
+错过了最后一个元素，如何修改？
+
+###### Solution
+
+```python
+class Solution:
+    def oddEvenList(self, head: ListNode) -> ListNode:
+        if not head or not head.next:
+            return head
+        odd = head
+        evenHead = head.next
+        even = evenHead
+        while even and even.next:
+            odd.next = even.next
+            odd = odd.next
+            even.next = odd.next
+            even = even.next
+        odd.next = evenHead
+        return head
+```
+
+##### [109] 有序链表转二叉树
+
+###### Key
+
+平衡二叉树是中点问题，见 [876] 题，正确找到中点的左侧部分是关键。
+
+###### Mistake
+
+```python
+class Solution:
+    def sortedListToBST(self, head: Optional[ListNode]) -> Optional[TreeNode]:
+        if not head or not head.next:
+            return head
+        left = right = ListNode(-1, head)
+        fast = slow = head
+        while fast and fast.next:
+            left = slow
+            slow = slow.next
+            fast = fast.next.next
+        print('mid:', slow.val)
+        root = TreeNode(slow.val)
+        right.next = slow.next
+        print('left:', left)
+        print('right:', right)
+        if left:
+            left.next = None
+            print('left:', left)
+            root.left = self.sortedListToBST(left.next)
+        root.right = self.sortedListToBST(right.next)
+        return root
+```
+
+###### Solution
+
+中点左侧部分，用slowHead标记。
+
+```python
+class Solution:
+    def sortedListToBST(self, head: ListNode) -> TreeNode:
+        if not head:
+            return head
+        slow = fast = head
+        slowHead = None
+        while fast and fast.next:
+            slowHead = slow
+            fast = fast.next.next
+            slow = slow.next
+        root = TreeNode(slow.val)
+
+        if slowHead:
+            slowHead.next = None
+            root.left = self.sortedListToBST(head)
+        root.right = self.sortedListToBST(slow.next)
+        return root
+```
+
+##### [430] 扁平化多级双向链表
 

@@ -1340,3 +1340,25 @@ class Solution:
 
 ##### [430] 扁平化多级双向链表
 
+```python
+class Solution:
+    def flatten(self, head: 'Node') -> 'Node':
+        cur = head
+        while cur:
+            if cur.child:
+                # flw 是分支的部分
+                flw = cur.next
+                child = cur.child
+                cur.next = child
+                child.prev = cur
+                cur.child = None
+                while child.next:
+                    child = child.next
+                if flw:
+                    flw.prev = child
+                    child.next = flw
+            cur = cur.next
+        return head
+```
+
+<img src="./pics/2.jpg" alt="2" style="zoom:50%;" />

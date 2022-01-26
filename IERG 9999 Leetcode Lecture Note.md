@@ -1362,3 +1362,344 @@ class Solution:
 ```
 
 <img src="./pics/2.jpg" alt="2" style="zoom:50%;" />
+
+##### [725] 分隔K个链表
+
+```python
+class Solution:
+    def splitListToParts(self, head: ListNode, k: int) -> List[ListNode]:
+        if not head:
+            return [None for _ in range(k)]
+        # 设计分隔子链表的长度
+        pnt = head
+        list = []
+        while pnt:
+            list.append(pnt.val)
+            pnt = pnt.next
+        sub_len = [len(list) // k for _ in range(k)]
+        add1 = len(list) % k
+        for i in range(add1):
+            sub_len[i] = sub_len[i] + 1
+        # 按照长度存储链表
+        pnt = head
+        output = [None for _ in range(k)]
+        i = 0
+        while i < k and pnt:
+            # 子链表的长度
+            sub_len_num = sub_len[i]
+            output[i] = pnt # 起点
+            for _ in range(sub_len_num-1): #截取
+                pnt = pnt.next
+            temp = pnt.next # 记录尾部
+            pnt.next = None # 截取
+            pnt = temp # 尾部恢复继续前进
+            i = i + 1
+        return output
+```
+
+##### [25] K个一组翻转链表
+
+速度比较慢(57%),使用内存较大。
+
+```python
+class Solution:
+    def reverseKGroup(self, head: Optional[ListNode], k: int) -> Optional[ListNode]:
+        if not head or not head.next:
+            return head
+        pnt = head
+        link_list_len = 0
+        while pnt:
+            pnt = pnt.next
+            link_list_len = link_list_len + 1
+
+        group_num = link_list_len // k
+        # 不能整除的情况
+        if (link_list_len % k):
+            group_num = group_num + 1
+        pnt = head
+        output = [None for _ in range(group_num)]
+        i = 0
+        # 分别翻转
+        while i < (group_num-1) and pnt.next:
+            output[i] = pnt
+            for _ in range(k-1):
+                pnt = pnt.next
+            temp = pnt.next
+            pnt.next = None
+            pnt = temp
+            output[i] = self.reverseList(output[i])
+            i = i + 1
+        # 最后一部分是否需要反转
+        if (link_list_len % k):
+            output[i] = pnt
+            while pnt:
+                pnt = pnt.next
+        else:
+            output[i] = pnt
+            while pnt:
+                pnt = pnt.next
+            output[i] = self.reverseList(output[i])
+        # 拼接
+        for i in range(group_num-1):
+            pnt = output[i]
+            while pnt.next:
+                pnt = pnt.next
+            pnt.next = output[i+1]
+        res = output[0]
+        return res
+
+    def reverseList(self, head: ListNode) -> Optional[ListNode]:
+        # 使用迭代
+        pre = head
+        cur = None
+        while pre != None:
+            next = pre.next
+            pre.next = cur
+            cur = pre
+            pre = next
+        return cur
+```
+
+###### Better Solution :+1:
+
+###### TODO::play_or_pause_button:
+
+#### 1.2 双链表
+
+##### [21] 合并两个有序链表
+
+```python
+class Solution:
+    def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
+        if not list1 or not list2:
+            if list1:
+                return list1
+            elif list2:
+                return list2
+            return list1
+
+        pnt1, pnt2 = list1, list2
+        pnt3 = ListNode(-1)
+        res = ListNode(-1,pnt3)
+
+        while pnt1 and pnt2:
+            if pnt1.val <= pnt2.val:
+                pnt3.next = pnt1
+                pnt3 = pnt3.next
+                pnt1 = pnt1.next
+            else:
+                pnt3.next = pnt2
+                pnt3 = pnt3.next
+                pnt2 = pnt2.next
+                
+       # 剩余部分不需要再遍历，直接指向头部就可以。
+        if pnt1:
+            while pnt1:
+                pnt3.next = pnt1
+                pnt3 = pnt3.next
+                pnt1 = pnt1.next
+        elif pnt2:
+            while pnt2:
+                pnt3.next = pnt2
+                pnt3 = pnt3.next
+                pnt2 = pnt2.next
+        return res.next.next
+```
+
+###### Better Solution
+
+```python
+class Solution:
+    def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
+        if not list1 or not list2:
+            if list1:
+                return list1
+            elif list2:
+                return list2
+            return list1
+
+        pnt1, pnt2 = list1, list2
+        res = pnt3 = ListNode(-1)
+
+        while pnt1 and pnt2:
+            if pnt1.val <= pnt2.val:
+                pnt3.next = pnt1
+                pnt1 = pnt1.next
+            else:
+                pnt3.next = pnt2
+                pnt2 = pnt2.next
+            pnt3 = pnt3.next
+
+        pnt3.next = pnt1 if pnt1 else pnt2
+
+        return res.next
+```
+
+##### [160] 相交链表
+
+###### 相同路程
+
+Idea：令两个指针在两个链表上行走，一定会在某一点重合（路程相同的时候）。如果相交，则会在pntA == pntB判断中被发现，如果不相交，返回None.
+
+```python
+class Solution:
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
+        pntA = headA
+        pntB = headB
+        while pntA != pntB:
+            pntA = pntA.next if pntA else headB
+            pntB = pntB.next if pntB else headA
+        return pntB
+```
+
+##### [2] 两数相加
+
+```python
+class Solution:
+    def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:
+        list1 = []
+        list2 = []
+        while l1:
+            list1.append(l1.val)
+            l1 = l1.next
+        while l2:
+            list2.append(l2.val)
+            l2 = l2.next
+        return self.retriveToLink(self.calculate(list1,list2))
+
+    def calculate(self, list1:list, list2:list) -> int:
+        list1_num = 0
+        list2_num = 0
+        for i in range(len(list1)):
+            list1_num = list1_num + list1[i] * (10 ** i)
+        for i in range(len(list2)):
+            list2_num = list2_num + list2[i] * (10 ** i)
+        return list1_num + list2_num
+
+    def retriveToLink(self, sum_int: int) -> ListNode:
+        res = l3 = ListNode(-1)
+        pow = 0
+        if sum_int == 0:
+            l3.next = ListNode(0)
+            l3 = l3.next
+        while sum_int != 0:
+            val = sum_int % 10
+            sum_int = sum_int // 10
+            l3.next = ListNode(val)
+            l3 = l3.next
+        return res.next
+```
+
+##### [445] 两数相加 II
+
+```python
+class Solution:
+    def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:
+        list1 = []
+        list2 = []
+        while l1:
+            list1.append(l1.val)
+            l1 = l1.next
+        while l2:
+            list2.append(l2.val)
+            l2 = l2.next
+        return self.retriveToLink(self.calculate(list1, list2))
+
+    def calculate(self, list1: list, list2: list) -> int:
+        list1_num = 0
+        list2_num = 0
+        for i in range(len(list1)):
+            list1_num = list1_num + list1[i] * (10 ** (len(list1) - i - 1))
+        for i in range(len(list2)):
+            list2_num = list2_num + list2[i] * (10 ** (len(list2) - i - 1))
+
+        print(list1_num, list2_num)
+        return list1_num + list2_num
+
+    def retriveToLink(self, sum_int: int) -> ListNode:
+        res = l3 = ListNode(-1)
+        if sum_int == 0:
+            l3.next = ListNode(0)
+            l3 = l3.next
+        vals = []
+        while sum_int != 0:
+            val = sum_int % 10
+            sum_int = sum_int // 10
+            vals.append(val)
+        for i in range(len(vals)):
+            val = vals[len(vals) - i - 1]
+            l3.next = ListNode(val)
+            l3 = l3.next
+        return res.next
+```
+
+##### [1669] 合并两个链表
+
+```python
+class Solution:
+    def mergeInBetween(self, list1: ListNode, a: int, b: int, list2: ListNode) -> ListNode:
+        pnt1 = list1
+        count = 0
+        # 拆除
+        while pnt1:
+            if count+1 == a:
+                start = pnt1
+                for _ in range(b-a+1):
+                    pnt1 = pnt1.next
+                end = pnt1.next
+                break
+            count = count + 1
+            pnt1 = pnt1.next
+        # 安装
+
+        pnt2 = list2
+        while pnt2.next:
+            pnt2 = pnt2.next
+        start.next = list2
+        pnt2.next = end
+
+        return list1
+```
+
+##### [23] 合并K个有序链表
+
+###### 递归与分而治之
+
+```python
+class Solution:
+    def mergeKLists(self, lists: List[ListNode]) -> ListNode:
+        return self.groupMerge(lists, 0, len(lists) - 1)
+
+    def groupMerge(self, lists: List[ListNode], l:int, r:int) -> ListNode:
+        if l == r:
+            return lists[l]
+        if l > r:
+            return None
+        mid = (l + r) // 2
+        return self.mergeTwoLists(self.groupMerge(lists,l,mid), self.groupMerge(lists,mid+1,r))
+
+    def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:
+        if not list1 or not list2:
+            if list1:
+                return list1
+            elif list2:
+                return list2
+            return list1
+
+        pnt1, pnt2 = list1, list2
+        res = pnt3 = ListNode(-1)
+
+        while pnt1 and pnt2:
+            if pnt1.val <= pnt2.val:
+                pnt3.next = pnt1
+                pnt1 = pnt1.next
+            else:
+                pnt3.next = pnt2
+                pnt2 = pnt2.next
+            pnt3 = pnt3.next
+
+        pnt3.next = pnt1 if pnt1 else pnt2
+
+        return res.next
+```
+

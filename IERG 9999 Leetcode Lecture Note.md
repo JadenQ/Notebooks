@@ -1663,7 +1663,7 @@ class Solution:
 
 ##### [23] 合并K个有序链表
 
-###### 递归与分而治之
+###### 递归与分而治之:+1:
 
 ```python
 class Solution:
@@ -1701,5 +1701,178 @@ class Solution:
         pnt3.next = pnt1 if pnt1 else pnt2
 
         return res.next
+```
+
+### 2.树
+
+#### 2.1 遍历
+
+##### 基础Recap:bookmark:
+
+前序遍历：根结点 ---> 左子树 ---> 右子树
+
+中序遍历：左子树 ---> 根结点 ---> 右子树
+
+后序遍历：左子树 ---> 右子树 ---> 根结点 【迭代法与前中差别比较大】
+
+层次遍历：只需按层次遍历即可
+
+Reference:
+
+https://blog.csdn.net/My_Jobs/article/details/43451187
+
+https://blog.csdn.net/weixin_43314519/article/details/106981900
+
+##### [145] [二叉树的后序遍历](https://leetcode-cn.com/problems/binary-tree-postorder-traversal/)
+
+###### 递归
+
+错误的递归条件： while root: 进入死循环。
+
+```python
+class Solution:
+    def postorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+
+        def postorderT(root:TreeNode, list:List):
+            if not root:
+                return
+            postorderT(root.left, list)
+            postorderT(root.right, list)
+            list.append(root.val)
+            
+        list = []
+        postorderT(root, list)
+        return list
+```
+
+###### 迭代
+
+###### TODO:play_or_pause_button:
+
+##### [94] [二叉树的中序遍历](https://leetcode-cn.com/problems/binary-tree-inorder-traversal/)
+
+###### 递归
+
+```python
+class Solution:
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+
+        def inorderT(root: TreeNode, list: List):
+            if not root:
+                return
+            inorderT(root.left, list)
+            list.append(root.val)
+            inorderT(root.right, list)
+
+        list = []
+        inorderT(root, list)
+        return list
+```
+
+###### 迭代
+
+```python
+class Solution:
+    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        if not root:
+            return []
+        list, stack =[],[]
+        node = root
+        while stack or node:
+            while node:
+                stack.append(node)
+                node = node.left
+            node = stack.pop()
+            list.append(node.val)
+            node = node.right
+        return list
+```
+
+##### [589] [589. N 叉树的前序遍历](https://leetcode-cn.com/problems/n-ary-tree-preorder-traversal/)
+
+###### 递归
+
+```python
+class Solution:
+    def preorder(self, root: 'Node') -> List[int]:
+        
+        def preO(root: Node, list: List):
+            if not root:
+                return
+            list.append(root.val)
+            for item in root.children:
+                preO(item, list)
+        
+        list = []
+        preO(root, list)
+        return list
+```
+
+###### 迭代
+
+###### TODO::play_or_pause_button:
+
+```
+
+```
+
+##### [144] [二叉树的前序遍历](https://leetcode-cn.com/problems/binary-tree-preorder-traversal/)
+
+###### 递归
+
+```python
+class Solution:
+    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        def preorderT(root: TreeNode, list: List):
+            if not root:
+                return
+            list.append(root.val)
+            preorderT(root.left, list)
+            preorderT(root.right, list)
+        list = []
+        preorderT(root, list)
+        return list
+```
+
+###### 迭代
+
+走到最左边，回头。使用栈记录。
+
+Python自带的pop方法可以实现后进先出。
+
+```python
+class Solution:
+    def preorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
+        if not root:
+            return []
+        list = []
+        stack = []
+        node = root
+        while stack or node:
+            while node:
+                list.append(node.val)
+                stack.append(node)
+                node = node.left
+            node = stack.pop()
+            node = node.right
+        return list
+```
+
+##### [590] [N 叉树的后序遍历](https://leetcode-cn.com/problems/n-ary-tree-postorder-traversal/)
+
+```python
+class Solution:
+    def postorder(self, root: 'Node') -> List[int]:
+
+        def postO(root: Node, list: List):
+            if not root:
+                return
+            for item in root.children:
+                postO(item, list)
+            list.append(root.val)
+        
+        list = []
+        postO(root, list)
+        return list
 ```
 

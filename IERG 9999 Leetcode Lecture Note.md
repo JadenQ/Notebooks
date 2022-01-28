@@ -1876,3 +1876,68 @@ class Solution:
         return list
 ```
 
+##### [102] 二叉树的层次遍历
+
+###### DFS
+
+queue队列用来保存每一层的全部元素节点，可以用两种方法表示queue。
+
+1. 使用数组
+
+```python
+class Solution:
+    def levelOrder(self, root: TreeNode) -> List[List[int]]:
+        if not root: return []
+        res = [] # 存储输出结果
+        queue = [root] # 保存当前层的节点
+        while queue:
+            res.append([node.val for node in queue])
+            child = []
+            for node in queue:
+                if node.left:
+                    child.append(node.left)
+                if node.right:
+                    child.append(node.right)
+            queue = child
+        return res
+```
+
+###### TODO::play_or_pause_button:
+
+2. 使用队列（collections.deque）
+
+```python
+
+```
+
+##### [103] 二叉树的锯齿形层次遍历
+
+###### DFS
+
+```python
+class Solution:
+    def zigzagLevelOrder(self, root: TreeNode) -> List[List[int]]:
+        if not root: return []
+        res = []  # 存储输出结果
+        queue = collections.deque()  # 保存当前层的节点
+        queue.append(root)
+        layer = 0
+        while queue:
+            layer_res = []
+            size = len(queue)
+            for i in range(size):
+                temp = queue.popleft()
+                layer_res.append(temp.val)
+                if temp.left: queue.append(temp.left)
+                if temp.right: queue.append(temp.right)
+
+            if layer % 2 == 0:
+                res.append(layer_res)
+            else:
+                res.append(layer_res[::-1])
+            layer = layer + 1
+        return res
+```
+
+
+

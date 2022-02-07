@@ -1802,7 +1802,6 @@ class Solution:
             list.append(root.val)
             for item in root.children:
                 preO(item, list)
-        
         list = []
         preO(root, list)
         return list
@@ -1939,5 +1938,189 @@ class Solution:
         return res
 ```
 
+##### [107] 二叉树的层次遍历 II
 
+```python
+class Solution:
+    def levelOrderBottom(self, root: TreeNode) -> List[List[int]]:
+        if not root: return []
+        queue = collections.deque()
+        queue.append(root)
+        res = []
+        while queue:
+            size = len(queue)
+            res_layer = []
+            for _ in range(size):
+                node = queue.popleft()
+                res_layer.append(node.val)
+                if node.left: queue.append(node.left)
+                if node.right: queue.append(node.right)
+            res.append(res_layer)
+        res.reverse() # only difference with 102
+        return res
+```
+
+#### 2.2 构造
+
+##### [108] [将有序数组转换为二叉搜索树](https://leetcode-cn.com/problems/convert-sorted-array-to-binary-search-tree/)
+
+递归，分而治之。
+
+```python
+class Solution:
+    def sortedArrayToBST(self, nums: List[int]) -> TreeNode:
+
+        def recurse(nums, left, right):
+            if left >= right:
+                return None
+            mid = (left + right) // 2
+            root = TreeNode(nums[mid])
+            print('left:', left, 'right:', right, 'mid:', mid)
+            root.left = recurse(nums, left, mid)
+            root.right = recurse(nums, mid+1, right)
+            return root
+
+        return recurse(nums, 0, len(nums))
+```
+
+##### [106] 从中序与后序遍历序列构造二叉树
+
+找到分割序列的规律，递归。
+
+分割数组时左闭右开。
+
+```python
+class Solution:
+    def buildTree(self, inorder: List[int], postorder: List[int]) -> TreeNode:
+        if not inorder or not postorder:
+            return None
+        return self.traverse(inorder, postorder)
+
+    def traverse(self, inorder: List[int], postorder: List[int]) -> TreeNode:
+        if len(postorder) == 0: return None
+        root_val = postorder[-1]
+        # 声明一个节点对象
+        root = TreeNode(root_val)
+        # 在中序里查找分割点
+        divide_in = 0
+        for i in range(len(inorder)):
+            if inorder[i] == root_val:
+                divide_in = i
+                break
+        # 切分左右Inorder
+        leftInorder = inorder[0:divide_in]
+        rightInorder = inorder[(divide_in+1):len(inorder)]
+        # 切分左右Postorder
+        postorder = postorder[:-1] # 舍弃最后一个元素（已经记录为根节点）
+        leftPostorder = postorder[0:len(leftInorder)]
+        rightPostorder = postorder[len(leftInorder):(len(leftInorder)+len(rightInorder))]
+        # 递归
+        root.left = self.traverse(leftInorder, leftPostorder)
+        root.right = self.traverse(rightInorder, rightPostorder)
+
+        return root
+```
+
+##### [105] 从中序与后序遍历序列构造二叉树
+
+```python
+class Solution:
+    def buildTree(self, preorder: List[int], inorder: List[int]) -> TreeNode:
+        if not preorder or not inorder:
+            return None
+        return self.traverse(preorder, inorder)
+
+    def traverse(self, preorder:List[int], inorder: List[int]) -> TreeNode:
+        if len(preorder) == 0: return None
+        root_val = preorder[0]
+        root = TreeNode(root_val)
+        # 根据preorder寻找分割点
+        divide_in = 0
+        for i in range(len(preorder)):
+            if inorder[i] == root_val:
+                divide_in = i
+                break
+        # 分割 inorder
+        leftInorder = inorder[0: divide_in]
+        rightInorder = inorder[(divide_in+1): len(inorder)]
+        # 分隔 preorder
+        preorder = preorder[1:]
+        leftPreorder = preorder[:len(leftInorder)]
+        rightPreorder = preorder[len(leftInorder):(len(leftInorder) + len(rightInorder))]
+        # 递归
+        root.left = self.traverse(leftPreorder, leftInorder)
+        root.right = self.traverse(rightPreorder, rightInorder)
+        return root
+```
+
+##### [114] 二叉树展开为链表
+
+###### 前序遍历
+
+按照前序遍历得到递归顺序，再重新整理left,right子节点
+
+```python
+class Solution:
+    def flatten(self, root: TreeNode) -> None:
+        """
+        Do not return anything, modify root in-place instead.
+        """
+        if not root: return root
+        list = []
+        self.traversal(root, list)
+        for i in range(1, len(list)):
+            prev, curr = list[i-1], list[i]
+            prev.left = None
+            prev.right = curr
+
+    def traversal(self, root: TreeNode, list: List):
+        if root:
+            list.append(root) # 保存节点
+            self.traversal(root.left, list)
+            self.traversal(root.right, list)
+        return list
+```
+
+###### 移动左子树 TODO: :play_or_pause_button:
+
+```
+ 
+```
+
+##### [889] 根据前序与后序遍历序列构造二叉树
+
+<img src="./pics/1644222156389.png" alt="1644222156389" style="zoom:50%;" />
+
+```python
+class Solution:
+    def constructFromPrePost(self, preorder: List[int], postorder: List[int]) -> TreeNode:
+        if not preorder or not postorder:
+            return None
+        return self.traversal(preorder, postorder)
+
+    def traversal(self, preorder, postorder) -> TreeNode:
+        if len(preorder) == 0 or len(postorder) == 0: return None
+        # 获取第一个根节点
+
+        root_val = preorder[0]
+        root = TreeNode(root_val)
+        preorder = preorder[1:]
+        postorder = postorder[:-1]
+        # 根据前序获取左根节点
+        if len(preorder) == 0 or len(postorder) == 0: return root
+        left_root = preorder[0]
+        post_divide = 0
+        for i in range(len(postorder)):
+            if postorder[i] == left_root:
+                post_divide = i
+                break
+        leftPreorder = preorder[0:(post_divide+1)]
+        rightPreorder = preorder[(post_divide+1):len(preorder)]
+        leftPostorder = postorder[0:(post_divide+1)]
+        rightPostorder = postorder[(post_divide+1): len(postorder)]
+
+        root.left = self.traversal(leftPreorder, leftPostorder)
+        root.right = self.traversal(rightPreorder, rightPostorder)
+        return root
+```
 

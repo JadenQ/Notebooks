@@ -1709,11 +1709,15 @@ class Solution:
 
 ##### 基础Recap:bookmark:
 
+###### DFS
+
 前序遍历：根结点 ---> 左子树 ---> 右子树
 
 中序遍历：左子树 ---> 根结点 ---> 右子树
 
 后序遍历：左子树 ---> 右子树 ---> 根结点 【迭代法与前中差别比较大】
+
+###### BFS
 
 层次遍历：只需按层次遍历即可
 
@@ -2122,5 +2126,136 @@ class Solution:
         root.left = self.traversal(leftPreorder, leftPostorder)
         root.right = self.traversal(rightPreorder, rightPostorder)
         return root
+```
+
+##### [1008] [前序遍历构造二叉搜索树](https://leetcode-cn.com/problems/construct-binary-search-tree-from-preorder-traversal/)
+
+```python
+class Solution:
+    def bstFromPreorder(self, preorder: List[int]) -> Optional[TreeNode]:
+        root = TreeNode(preorder[0])
+        for i in range(1, len(preorder)):
+            self.buildTree(root, preorder[i])
+        return root
+
+    def buildTree(self, root: TreeNode, val: int):
+        if val < root.val:
+            if root.left is None: root.left = TreeNode(val)
+            else: self.buildTree(root.left, val)
+        else:
+            if root.right is None: root.right = TreeNode(val)
+            else: self.buildTree(root.right, val)
+```
+
+##### [297] [二叉树的序列化与反序列化](https://leetcode-cn.com/problems/serialize-and-deserialize-binary-tree/) 
+
+###### BFS遍历经典 :bookmark:
+
+###### attr使用 :bookmark:
+
+1. 二叉树 -> 字符串 
+
+   二叉树的遍历，存储为字符串。遍历的为增广树，保留null，不只是普通的记录节点。
+
+   BFS遍历
+
+2. 字符串 -> 二叉树
+
+   Parse字符串之后，将二叉树恢复。
+
+```python
+class Codec:
+    def serialize(self, root):
+        """Encodes a tree to a single string.
+
+        :type root: TreeNode
+        :rtype: str
+        """
+        # corner case
+        if not root: return ""
+        # regular case
+        output = [str(root.val)]
+        q = deque([root])
+        while q:
+            # pop the node
+            node = q.popleft()
+            # 区分左右子树, getattar(node,'left) = node.left
+            for attr in ['left','right']:
+                if getattr(node, attr) is None:
+                    output.append('#')
+            # 添加输出，添加新节点到队列
+                else:
+                    output.append(str(getattr(node, attr).val))
+                    q.append(getattr(node, attr))
+        return ','.join(output)
+
+
+    def deserialize(self, data):
+        """Decodes your encoded data to tree.
+        
+        :type data: str
+        :rtype: TreeNode
+        """
+        # corner case
+        if len(data) == 0: return None
+        # regular case
+        data = data.split(',')
+        root = TreeNode(int(data[0]))
+        q = deque([root])
+        i = 1 # the index to push data forward
+        while q:
+            # pop
+            node = q.popleft()
+            for attr in ['left', 'right']:
+                if data[i] != '#':
+                    # 如果值不为空，为当前node创建一个新的左/右节点
+                    setattr(node, attr, TreeNode(int(data[i])))
+                    q.append(getattr(node, attr))
+                i = i + 1
+
+        return root
+```
+
+##### [101] [对称二叉树](https://leetcode-cn.com/problems/symmetric-tree/)
+
+递归每一层的左右子树，对比当前节点的值、内侧外侧分别左子树右子树的值。
+
+```python
+class Solution:
+    def isSymmetric(self, root: TreeNode) -> bool:
+        if not root: return True
+        return self.compareTwo(root.left, root.right)
+    def compareTwo(self, left: TreeNode, right: TreeNode) -> bool:
+        if left == None and right == None: return True
+        if left == None and right is not None: return False
+        if left is not None and right == None: return False
+        value_same = (left.val == right.val)
+        external_flag = self.compareTwo(left.left, right.right)
+        internal_flag = self.compareTwo(left.right, right.left)
+        result = (value_same and external_flag and internal_flag)
+        return result
+```
+
+##### [104] [二叉树的最大深度](https://leetcode-cn.com/problems/maximum-depth-of-binary-tree/)
+
+使用任意一种深度优先算法，记录每次走到终点时的层数。
+
+```python
+class Solution:
+    def maxDepth(self, root: Optional[TreeNode]) -> int:
+
+        def preTraversal(root: TreeNode, count: int):
+            if not root:
+                list.append(count)
+                count = 0
+                return
+            count = count + 1
+            preTraversal(root.left, count)
+            preTraversal(root.right, count)
+            return count
+        count = 0
+        list = []
+        preTraversal(root, count)
+        return max(list)
 ```
 

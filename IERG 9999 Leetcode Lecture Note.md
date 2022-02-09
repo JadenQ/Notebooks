@@ -2259,3 +2259,175 @@ class Solution:
         return max(list)
 ```
 
+##### [226] [翻转二叉树](https://leetcode-cn.com/problems/invert-binary-tree/)
+
+每一个左右子树相互交换。
+
+```python
+class Solution:
+    def invertTree(self, root: TreeNode) -> TreeNode:
+        if not root: return root
+        self.reverseTree(root)
+        return root
+    def reverseTree(self, psdeu_root: TreeNode):
+        temp = psdeu_root.right
+        psdeu_root.right = psdeu_root.left
+        psdeu_root.left = temp
+        if psdeu_root.left:
+            self.reverseTree(psdeu_root.left)
+        if psdeu_root.right:
+            self.reverseTree(psdeu_root.right)
+```
+
+##### [543] [二叉树的直径](https://leetcode-cn.com/problems/diameter-of-binary-tree/)
+
+每次遍历记录cur_d 为当前节点下左右子树的深度，比较每个节点左右子树深度之和，最大的记录为最终结果。
+
+```python
+class Solution:
+    def diameterOfBinaryTree(self, root: TreeNode) -> int:
+        if not root: return 0
+        self.ans = 0
+        self.depth(root)
+        return self.ans - 1
+    def depth(self, root: TreeNode):
+        if not root:
+            return 0
+        left_d = self.depth(root.left)
+        right_d = self.depth(root.right)
+        self.ans = max(left_d+right_d+1, self.ans)
+        cur_d = max(left_d, right_d) + 1
+        return cur_d
+```
+
+##### [257] [二叉树的所有路径](https://leetcode-cn.com/problems/binary-tree-paths/)
+
+###### Mistake
+
+```python
+class Solution:
+    def binaryTreePaths(self, root: Optional[TreeNode]) -> List[str]:
+        self.ans = []
+        list = []
+        self.preTraversal(root,list)
+        return self.ans
+    def preTraversal(self, root:TreeNode, list:List):
+        if root:
+            list.append(str(root.val))
+            if not root.left and not root.right:
+                path = '->'.join(list)
+                self.ans.append(path)
+            else:
+                self.preTraversal(root.left, list)
+                self.preTraversal(root.right, list)
+```
+
+```
+[OUTPUT]
+			运行成功:
+			测试用例:[1,2,3,null,5]
+			测试结果:["1->2->5","1->2->5->3"]
+			期望结果:["1->2->5","1->3"]
+```
+
+###### Solution
+
+###### TODO:
+
+List在函数中的生命周期问题，在何处更新list为空？
+
+```python
+class Solution:
+    def binaryTreePaths(self, root: Optional[TreeNode]) -> List[str]:
+        self.ans = []
+        self.preTraversal(root,'')
+        return self.ans
+    def preTraversal(self, root:TreeNode, path: str):
+        if root:
+            path += str(root.val)
+            if not root.left and not root.right:
+                self.ans.append(path)
+            else:
+                path += '->'
+                self.preTraversal(root.left, path)
+                self.preTraversal(root.right, path)
+```
+
+##### [110] [平衡二叉树](https://leetcode-cn.com/problems/balanced-binary-tree/)
+
+###### 获取树的节点深度 - 范例:bookmark:
+
+###### 自上而下的遍历
+
+存在重复遍历的情况(一次遍历计算高度，一次遍历判断平衡)，应该可以改进。
+
+```python
+class Solution:
+    def isBalanced(self, root: TreeNode) -> bool:
+        if not root: return True
+
+        return self.allLeftRight(root)
+
+    # 遍历每一个节点是否平衡
+    def allLeftRight(self,root:TreeNode) -> bool:
+        if not root: return True
+        flag_cur = self.isLeftRight(root)
+        flag_right = self.allLeftRight(root.right)
+        flag_left = self.allLeftRight(root.left)
+        flag = (flag_cur and flag_left and flag_right)
+        return flag
+
+    # 单个节点是否平衡
+    def isLeftRight(self, root: TreeNode) -> bool:
+        def depth(root: TreeNode):
+            if not root: return 0
+            left_d = depth(root.left)
+            right_d = depth(root.right)
+            return max(left_d, right_d) + 1
+        L = depth(root.left)
+        R = depth(root.right)
+        label = (abs(L - R) <= 1)
+        return label
+```
+
+```python
+class Solution:
+    def isBalanced(self, root: TreeNode) -> bool:
+        if not root: return True
+        return (self.isLeftRight(root) and self.isBalanced(root.left) and self.isBalanced(root.right))
+
+    # 单个节点是否平衡
+    def isLeftRight(self, root: TreeNode) -> bool:
+        def depth(root: TreeNode):
+            if not root: return 0
+            left_d = depth(root.left)
+            right_d = depth(root.right)
+            return max(left_d, right_d) + 1
+        L = depth(root.left)
+        R = depth(root.right)
+        label = (abs(L - R) <= 1)
+        return label
+```
+
+###### 自下而上的遍历 :+1:
+
+只要有一个节点不平衡，整个二叉树标记为不平衡，因此不用遍历并验证所有节点，判断平衡之后再计算高度。
+
+```python
+class Solution:
+    def isBalanced(self, root: TreeNode) -> bool:
+        if not root: return True
+        return self.depth(root) >= 0
+
+    def depth(self, root: TreeNode) -> bool:
+        if not root: return 0
+        # 递归判断所有节点是否平衡
+        left = self.depth(root.left)
+        right = self.depth(root.right)
+        # 不平衡的二叉树情况， 利用-1实现迭代
+        # 只要有一个节点不平衡，整个二叉树标记为不平衡，因此不用遍历并验证所有节点
+        if left == -1 or right == -1 or abs(left - right) > 1:
+            return -1
+        else: return max(left, right) + 1
+```
+

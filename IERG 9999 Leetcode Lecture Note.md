@@ -2281,6 +2281,8 @@ class Solution:
 
 ##### [543] [二叉树的直径](https://leetcode-cn.com/problems/diameter-of-binary-tree/)
 
+###### Classical :bookmark:
+
 每次遍历记录cur_d 为当前节点下左右子树的深度，比较每个节点左右子树深度之和，最大的记录为最终结果。
 
 ```python
@@ -2431,3 +2433,75 @@ class Solution:
         else: return max(left, right) + 1
 ```
 
+##### [617] [合并二叉树](https://leetcode-cn.com/problems/merge-two-binary-trees/)
+
+###### DFS
+
+```python
+class Solution:
+    def mergeTrees(self, root1: TreeNode, root2: TreeNode) -> TreeNode:
+        # corner case
+        if root1 is None: return root2
+        if root2 is None: return root1
+        res = TreeNode(root1.val+root2.val,
+                       self.mergeTrees(root1.left, root2.left),
+                       self.mergeTrees(root1.right, root2.right))
+        return res
+```
+
+##### [100] [相同的树](https://leetcode-cn.com/problems/same-tree/)
+
+###### DFS
+
+```python
+class Solution:
+    def isSameTree(self, p: TreeNode, q: TreeNode) -> bool:
+        # corner case
+        if p is None and q is None: return True
+        if p is None or q is None: return False
+        # regular case
+        flag = (p.val == q.val)
+        return (flag and self.isSameTree(p.left,q.left) and self.isSameTree(p.right, q.right))
+```
+
+##### [112] [路径总和](https://leetcode-cn.com/problems/path-sum/)
+
+###### Clever
+
+求总和的时候精妙的一点在于，每一次递归都修改了targetSum。
+
+```python
+class Solution:
+    def hasPathSum(self, root: Optional[TreeNode], targetSum: int) -> bool:
+        if not root: return False
+        # 确定为叶子节点
+        if not root.left and not root.right:
+            return (targetSum == root.val)
+        return self.hasPathSum(root.left, targetSum - root.val) or self.hasPathSum(root.right, targetSum - root.val)
+```
+
+##### [111] [二叉树的最小深度](https://leetcode-cn.com/problems/minimum-depth-of-binary-tree/)
+
+###### DFS
+
+1.一边无子节点时，应当存为另一边的深度，一致使用min函数会忽略一边无子树的情况。
+
+```PYTHON
+class Solution:
+    def minDepth(self, root: TreeNode) -> int:
+        if not root: return 0
+        if not root.right and not root.left: return 1
+        left = self.minDepth(root.left)
+        right = self.minDepth(root.right)
+        # 易错：一边无子节点时，应当存为另一边的深度，
+        if (left == 0 or right == 0):
+            return left + right + 1
+        else:
+            return min(left,right) + 1
+```
+
+###### TODO:play_or_pause_button:
+
+2.其他解法
+
+###### BFS

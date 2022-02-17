@@ -1,18 +1,24 @@
+## Theory
+
+
+
+## Practice
+
 ### Container
 
 #### Build docker application
 
 ##### Create requirements.txt (for packaging python libraries’ dependencies)
 
-```
+```shell
 $ vim requirements.txt
-# requirements.txt
+# requirements.
 Flask==2.0.2
 ```
 
 ##### Create Dockerfile
 
-```
+```shell
 $ vim Dockerfile
 FROM python:3.10.1
 LABEL maintainer="tds019@ie.cuhk.edu.hk"
@@ -25,7 +31,7 @@ CMD python main.py
 
 ##### Build the image
 
-```
+```shell
 $ ls
 Dockerfile       main.py          requirements.txt templates
 $ docker build -t myflask:1.0 .
@@ -37,7 +43,7 @@ myflask                 1.0           1d7ab0712b96   22 minutes ago      928MB
 
 ##### Run a container from the myflask image
 
-```
+```shell
 $ docker run -d --name simple_web -p 5730:4330 myflask:1.0
 $ docker ps
 CONTAINER ID   IMAGE         COMMAND                  CREATED         STATUS         PORTS                              NAMES
@@ -62,7 +68,7 @@ CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
 
 ##### Delete the image
 
-```
+```shell
 docker rmi <your-image-id>
 ```
 
@@ -83,13 +89,13 @@ docker rmi <your-image-id>
 
 - `docker container run -d --name web -p 5000:80 alpine:3.9` run the above container in the background.
 
-- ```
+- ```shell
   docker container stop web
   ```
 
   or
 
-  ```
+  ```shell
   docker stop <id>
   ```
 

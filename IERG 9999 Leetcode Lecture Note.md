@@ -2505,3 +2505,104 @@ class Solution:
 2.其他解法
 
 ###### BFS
+
+##### [236] [二叉树的最近公共祖先](https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/)
+
+在递归函数有返回值的情况下：如果要搜索⼀条边，递归函数返回值不为空的时候，立刻返回，如果搜索整个树，
+直接用一个变量left、right接住返回值，这个left、right后序还有逻辑处理的需要，也就是后序遍历中处理中间节
+点的逻辑（也是回溯）。
+
+Corner case在叶子节点，达到叶子节点之后向上回溯。
+
+###### 后序遍历 向上回溯
+
+```python
+class Solution:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
+        # corner case
+        if root == p or root == q or root == None:
+            return root
+        left = self.lowestCommonAncestor(root.left, p, q)
+        right = self.lowestCommonAncestor(root.right, p, q)
+        if left == None and right != None:
+            return right
+        elif left != None and right == None:
+            return left
+        elif left != None and right != None:
+            return root
+        else: return None
+```
+
+##### [222] [完全二叉树的节点个数](https://leetcode-cn.com/problems/count-complete-tree-nodes/)
+
+```python
+class Solution:
+    def countNodes(self, root: TreeNode) -> int:
+        res = self.acc(root)
+        return res
+
+    def acc(self, root: TreeNode) -> int:
+        if root is None: return 0
+        left = self.acc(root.left)
+        right = self.acc(root.right)
+        return left + right + 1
+```
+
+##### [113] [路径总和 II](https://leetcode-cn.com/problems/path-sum-ii/)
+
+###### 使用Stack - 范例 :bookmark:
+
+```python
+class Solution:
+    def pathSum(self, root: Optional[TreeNode], targetSum: int) -> List[List[int]]:
+
+        def path(root: Optional[TreeNode], targetSum:int):
+            if not root: return
+            # 节点元素加入栈
+            path_ele.append(root.val)
+            # targetSum更新
+            targetSum = targetSum - root.val
+            # 符合添加路径的条件: 到达叶子节点，且targetSum刚好为0
+            if not root.left and not root.right and targetSum == 0:
+                # 保存path_ele的影像， 不使用paths.append(path_ele)
+                # 因为append到paths后不再发生改变，因此使用path_ele[:],r
+                paths.append(path_ele[:])
+            path(root.left, targetSum)
+            path(root.right, targetSum)
+            path_ele.pop() # 不符合条件，出栈
+
+        paths = [] # 最终的结果，动态变化的path_ele的快照，确定后不希望其发生改变
+        path_ele = [] # 栈，不断检查和是否为targetSum,
+        path(root, targetSum)
+        return paths
+```
+
+##### [437] [路径总和 III](https://leetcode-cn.com/problems/path-sum-iii/)
+
+###### DFS
+
+```python
+class Solution:
+    def pathSum(self, root: TreeNode, targetSum: int) -> int:
+        # 对其中一个节点，返回符合条件的路径的个数
+        def pathSearch(root: TreeNode, targetSum:int):
+            if root is None: return 0
+            # at the final stage. 找到最后的判断条件，即最后一个root值和targetSum相等，找到完整的符合条件路径
+            res = 0
+            # corner case: 填充最后一个元素
+            if root.val == targetSum:
+                res = res + 1
+            res += pathSearch(root.left, targetSum - root.val)
+            res += pathSearch(root.right, targetSum - root.val)
+            return res
+
+        if root is None: return 0
+        # initialization
+        res = pathSearch(root, targetSum)
+        # 遍历所有节点，将所有节点的所有路径相加
+        res += self.pathSum(root.left, targetSum)
+        res += self.pathSum(root.right, targetSum)
+        return res
+```
+
+###### 前缀和

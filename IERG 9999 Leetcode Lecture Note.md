@@ -2581,6 +2581,10 @@ class Solution:
 
 ###### DFS
 
+遍历每个节点，把每个节点都当作根节点进行路径遍历；需要遍历两次$O(n^2)$，有多余的计算。
+
+$n$个节点，每个节点进行深度遍历搜索满足$sum = targetSum$ 的路径。
+
 ```python
 class Solution:
     def pathSum(self, root: TreeNode, targetSum: int) -> int:
@@ -2606,3 +2610,16 @@ class Solution:
 ```
 
 ###### 前缀和
+
+$n$个节点，对每个节点与根节点(root)之间的路径是确定的：对于节点$b$，找出这个完整路径中可以满足$sum = targetSum$的、以$b$为终点的片段数量（计算前缀和）。需要遍历$O(n)$，最多计算$n$次前缀和的一维问题。
+
+求解从原始起点（根节点）到当前节点 b 的路径中，有多少节点 a 满足 sum[a...b] = targetSumsum[a...b]=targetSum，由于从原始起点（根节点）到当前节点的路径唯一，因此这其实是一个「一维前缀和」问题。
+
+```
+
+```
+
+
+
+
+

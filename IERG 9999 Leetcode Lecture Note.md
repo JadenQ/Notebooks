@@ -2577,7 +2577,7 @@ class Solution:
         return paths
 ```
 
-##### [437] [路径总和 III](https://leetcode-cn.com/problems/path-sum-iii/)
+##### [437] [路径总和 III](https://leetcode-cn.com/problems/path-sum-iii/) :star:
 
 ###### DFS
 
@@ -2611,15 +2611,121 @@ class Solution:
 
 ###### 前缀和
 
+见Topic1-前缀和。
+
 $n$个节点，对每个节点与根节点(root)之间的路径是确定的：对于节点$b$，找出这个完整路径中可以满足$sum = targetSum$的、以$b$为终点的片段数量（计算前缀和）。需要遍历$O(n)$，最多计算$n$次前缀和的一维问题。
 
 求解从原始起点（根节点）到当前节点 b 的路径中，有多少节点 a 满足 sum[a...b] = targetSumsum[a...b]=targetSum，由于从原始起点（根节点）到当前节点的路径唯一，因此这其实是一个「一维前缀和」问题。
 
+sum相加所有经过的节点值，sum-targetsum = root.val
+
+```python
+import collections
+class Solution:
+    def pathSum(self, root: TreeNode, targetSum: int) -> int:
+        prefix = collections.defaultdict(int)
+        prefix[0] = 1
+        def dfs(root:TreeNode, sum):
+            if not root: return 0
+            res = 0 # the count of path
+            sum += root.val
+            res += prefix[sum - targetSum]
+            prefix[sum] += 1
+            res += dfs(root.left, sum)
+            res += dfs(root.right, sum)
+            prefix[sum] -= 1
+            return res
+        return dfs(root, 0)
 ```
 
+更清晰些：
+
+```python
+class Solution:
+    def pathSum(self, root: TreeNode, targetSum: int) -> int:
+        global prefix
+        global res
+        global t
+        res = 0  # 路径出现次数
+        # val: 累加的节点值
+        t = targetSum
+        prefix = collections.defaultdict(int) # prefix: key-节点Prefix值，value:出现次数
+        if not root: return 0
+        def dfs(root: TreeNode, val: int):
+            global res
+            global t
+            if (val - t) in list(prefix.keys()):
+                res += prefix[val - t]
+            prefix[val] += 1
+            # 累加val 节点值
+            if root.left: dfs(root.left, root.left.val + val)
+            if root.right: dfs(root.right, root.right.val + val)
+            # 每次只count 左 or 右一边
+            prefix[val] -= 1
+            return res
+        prefix[0] = 1
+        dfs(root, root.val)
+        return res
 ```
 
+###### Extension: [560] 等于K的连续子序列
 
+思路与 路径总和 III 一致。
 
+**[超出时间限制]**
 
+```python
+class Solution:
+    def subarraySum(self, nums: List[int], k: int) -> int:
+        prefix = collections.defaultdict(int)
+        sum_, res = 0, 0
+        prefix[0] = 1
+        for i in range(len(nums)):
+            sum_ += nums[i]
+            if sum_ - k in list(prefix.keys()):
+                res += prefix[sum_ - k]
+            prefix[sum_] += 1
+        return res
+```
+
+**[AC]**
+
+```java
+class Solution {
+    public int subarraySum(int[] nums, int k) {
+		Map<Integer, Integer> map = new HashMap<>();
+        int sum = 0, res = 0;
+        map.put(0,1);
+        for (int num : nums){
+            sum+=num;
+           	if(map.containsKey(sum-k)) res += map.get(sum-k);
+            map.put(sum, map.getOrDefault(sum, 0) + 1);
+        }
+        return res;
+    }
+}
+```
+
+##### [129] 求根到叶子节点数字之和
+
+困境： 如何返回根节点
+
+不需要返回根节点，只需要保存上一步状态（前面所有节点和），即total。
+
+到达叶子节点返回total，返回递归函数的最终结果。
+
+```python
+class Solution:
+    def sumNumbers(self, root: TreeNode) -> int:
+        if not root: return 0
+        def depth(root, prevTotal):
+            total = prevTotal * 10 + root.val
+            if not root.left and not root.right:
+                return total
+            left = depth(root.left, total)
+            right = depth(root.right, total)
+            return left + right
+        res = depth(root, 0)
+        return res
+```
 

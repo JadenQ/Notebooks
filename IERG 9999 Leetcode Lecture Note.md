@@ -2729,3 +2729,26 @@ class Solution:
         return res
 ```
 
+##### [662] [二叉树最大宽度](https://leetcode-cn.com/problems/maximum-width-of-binary-tree/)
+
+给每一个节点编号，同一层编号最大的差就是最大宽度。
+
+left[depth]为左节点，pos是节点的编号，pos\*2标记左子树，pos\*2+1标记右子树。
+
+所以在同一层，节点的编号就是偶、奇、偶...最大差ans = max(ans, pos - left[depth])
+
+```python
+class Solution:
+    def widthOfBinaryTree(self, root: Optional[TreeNode]) -> int:
+        left = {} # 记录最左边节点
+        self.ans = 0 # 初始差
+        def dfs(node:TreeNode, depth = 0, pos = 0):
+            if node:
+                left.setdefault(depth, pos) # set the label of each node
+                self.ans = max(self.ans, pos - left[depth] +1) # 获得最大差
+                dfs(node.left, depth+1, pos*2)
+                dfs(node.right, depth+1, pos*2 + 1)
+        dfs(root,0,0)
+        return self.ans
+```
+

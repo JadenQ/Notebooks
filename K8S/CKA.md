@@ -42,9 +42,22 @@ For containers run application: container runtime on each node - *Docker*, conta
 
 *kube-proxy services*: communication among worker nodes, e.g. communication between database server and web server in different containers.
 
-##### ETCD for beginners
+##### ETCD
 
+###### ETCD
 
+Distributed reliable key-value store that is simple, secure and fast. Fast write and read the configuration, use etcdctl to set, query key-value.
+
+###### Contents
+
+Nodes, pods, configs, secrets, accounts, roles, bindings and others.
+
+There are 2 ways to deploy k8s cluster.
+
+1. From scratch to setup cluster, download, install and configure etcd manually.
+2. Use kubeadm to setup cluster.
+
+Advertise-client-url: kube-api server to etcd server.
 
 
 

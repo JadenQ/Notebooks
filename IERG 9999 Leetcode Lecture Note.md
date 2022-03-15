@@ -1881,7 +1881,7 @@ class Solution:
 
 ##### [102] 二叉树的层次遍历
 
-###### DFS
+###### BFS
 
 queue队列用来保存每一层的全部元素节点，可以用两种方法表示queue。
 
@@ -1979,7 +1979,6 @@ class Solution:
                 return None
             mid = (left + right) // 2
             root = TreeNode(nums[mid])
-            print('left:', left, 'right:', right, 'mid:', mid)
             root.left = recurse(nums, left, mid)
             root.right = recurse(nums, mid+1, right)
             return root
@@ -2750,5 +2749,86 @@ class Solution:
                 dfs(node.right, depth+1, pos*2 + 1)
         dfs(root,0,0)
         return self.ans
+```
+
+##### [199] [二叉树的右视图](https://leetcode-cn.com/problems/binary-tree-right-side-view/)
+
+根 - 右 - 左 的遍历，自由调整遍历顺序。
+
+```python
+class Solution:
+    def rightSideView(self, root: TreeNode) -> List[int]:
+        self.ans = []
+        def dfs(node: TreeNode, depth = 0):
+            if node:
+                if depth == len(self.ans):
+                    self.ans.append(node.val)
+                depth = depth + 1
+                dfs(node.right, depth)
+                dfs(node.left, depth)
+        dfs(root)
+        return self.ans
+```
+
+##### [116] [填充每个节点的下一个右侧节点指针](https://leetcode-cn.com/problems/populating-next-right-pointers-in-each-node/)
+
+层次遍历法
+
+```python
+class Solution:
+    def connect(self, root: 'Optional[Node]') -> 'Optional[Node]':
+        if not root: return root
+        Q = collections.deque([root]) # 添加第一层
+        while Q:
+            # 记录这一层元素数量，用于遍历
+            size = len(Q)
+            # 遍历元素
+            for i in range(size):
+                node = Q.popleft()
+                if i < size - 1:
+                    # 链接
+                    node.next = Q[0]
+                if node.left:
+                    Q.append(node.left)
+                if node.right:
+                    Q.append(node.right)
+        return root
+```
+
+##### [515] [在每个树行中找最大值](https://leetcode-cn.com/problems/find-largest-value-in-each-tree-row/)
+
+###### BFS 层次遍历
+
+```python
+class Solution:
+    def largestValues(self, root: Optional[TreeNode]) -> List[int]:
+        if not root: return []
+        self.ans = []
+        Q = [root]
+        while Q:
+            self.ans.append(max([node.val for node in Q]))
+            child = []
+            for node in Q:
+                if node.left: child.append(node.left)
+                if node.right: child.append(node.right)
+            Q = child
+
+        return self.ans
+```
+
+##### [98] 验证二叉搜索树
+
+中序遍历
+
+```python
+class Solution:
+    def isValidBST(self, root: TreeNode) -> bool:
+        if not root.right and not root.left: return True
+        def isValid(node, left, right):
+            if not node: return True # corner case 可以作为递归的真情况
+            if node.val > left and node.val < right:
+                return isValid(node.left, left, node.val) and isValid(node.right, node.val, right)
+            else: return False
+        return isValid(root, -float('inf'), float('inf'))
 ```
 

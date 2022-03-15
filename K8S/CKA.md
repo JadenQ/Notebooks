@@ -59,11 +59,59 @@ There are 2 ways to deploy k8s cluster.
 
 Advertise-client-url: kube-api server to etcd server.
 
+##### Kube-API server
 
+###### Case: Process of creating a pod
 
+1. Authenticate User
+2. Validate Request
+3. Retrieve data
+4. Update ETCD
+5. Scheduler
+6. Kubelet
 
+Step 1-4 create pod without assigning node, scheduler identify the right node to deploy new pod, use API server to update information to ETCD, and pass to kubelet.
 
+Kubelet create pod on the node and instruct container runtime engine to deploy application image. API-server update 
 
+API server is the **only components** to directly talk to ETCD, kubeadm can save us from setting api-server(kube-api server as an pod), in other ways to create cluster, we need to configure it.
 
+```shell
+# check all running servers
+ps -aux | grep kube-apiserver
+```
 
+##### Kube Controller Manager
 
+Manage ships / containers on ships
+
+1. Watch status
+2. Remediate situation
+
+- Node-controller
+  - check status of node 5sec/time using kube-apiserver
+  - unreachable pod: 5min to go back up: pod eviction Timeout,
+  - not come back pod: provision with new pod
+- Replicate-controllers
+  - make sure the number of pods is constant
+
+All controller is integrated in kube controller manager.
+
+```shell
+# download and customize controller, set up node, replicate controllers
+# setup with kubeadm in master node:
+kubectl get pods -n kube-system
+# /menifests/kube-controller-manager.yaml
+
+# setup from scratch
+kube-controller-manager.server
+ps -aux | grep kube-controller-manager
+```
+
+##### Kube-scheduler
+
+Scheduler: *deciding* which pods go to which node, not place it. *Kubelet place it.*
+
+###### How need scheduler
+
+Right 

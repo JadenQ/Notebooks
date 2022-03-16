@@ -2812,7 +2812,6 @@ class Solution:
                 if node.left: child.append(node.left)
                 if node.right: child.append(node.right)
             Q = child
-
         return self.ans
 ```
 
@@ -2832,3 +2831,79 @@ class Solution:
         return isValid(root, -float('inf'), float('inf'))
 ```
 
+##### [124] [二叉树中的最大路径和](https://leetcode-cn.com/problems/binary-tree-maximum-path-sum/)
+
+思路1： 遍历各个叶子节点之间的路径
+
+对每个节点，查看左最大gain和右最大gain，找到具有最大gain的节点。返回最大gain。
+
+```python
+class Solution:
+    def __init__(self):
+        self.maxSum = float('-inf')
+	def maxPathSum(self, root: Optional[TreeNode]) -> int:
+        def maxGain(node: TreeNode):
+            if not node: return 0
+            # to make sure the gain is >0
+            leftGain = max(maxGain(node.left), 0)
+            rightGain = max(maxGain(node.right), 0)
+            # new path
+            newPath = node.val + leftGain + rightGain
+            # if renew the largest result?
+            self.maxSum = max(newPath, self.maxSum)
+            return node.val + max(leftGain, rightGain)
+        maxGain(root)
+        return self.maxSum            
+```
+
+##### [96] [不同的二叉搜索树](https://leetcode-cn.com/problems/unique-binary-search-trees/)
+
+set f(0) = 1.
+
+f(1) = 1, f(2) = 2 = f(1,0) + f(0,1),
+
+f(3) = 5 = f(0,2) + f(1,1) + f(2,0) ,
+
+f(4) = f(0,3)+ f(1,2) + f(2,1) + f(3,0)  = f(3) + f(1) * f(2) + f(2) * f(1) + f(3) = 5 + 2 + 2 + 5 = 14,
+
+f(5) = f(0,4) + f(1,3) +f(2,2) + f(3,1) + f(4,0) = 14+5+2*2+5+14 = 42
+
+...
+
+$f(n) = \sum_{i=0}^{n-1} f(i) \times f( n - i - 1) $
+
+###### 递归
+
+Time out error.
+
+```python
+class Solution:
+    def numTrees(self, n: int) -> int:
+        self.res = 0
+        if n == 0 or n == 1: return 1
+        for i in range(n):
+            self.res += self.numTrees(i) * self.numTrees(n-i-1)
+        return self.res
+```
+
+###### 动态规划
+
+空间换时间，保存每一步。
+
+```python
+class Solution:
+    def numTrees(self, n: int) -> int:
+    	dp = [0 for _ in range(n+1)]
+        dp[0], dp[1] = 1,1
+        # 必须按照从大到小序列来计算。即两个下标和为 i - 1 = (i - j) + (j - 1)
+        for i in range(2, n+1):
+            for j in range(1, i+1):
+                dp[i] += dp[j-1] * dp[i - j]
+        return dp[n]
+```
+
+##### [95] [不同的二叉搜索树 II](https://leetcode-cn.com/problems/unique-binary-search-trees-ii/)
+
+###### Pass
+
+##### [173] [二叉搜索树迭代器](https://leetcode-cn.com/problems/binary-search-tree-iterator/)

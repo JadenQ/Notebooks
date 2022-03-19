@@ -57,7 +57,9 @@ EXPOSE 8090
 
 RUN make -j6 GPU=1 CUDNN=1 CUDNN_HALF=1 OPENCV=1
 
-CMD ./darknet detector demo ./cfg/coco.data ./cfg/yolov4-custom.cfg ../weights/yolov4.weights /opt/docker-yolov4-cuda/data/traffic.mp4 -json_port 8070 -mjpeg_port 8090 -ext_output -dont_show
+CMD ./darknet detector demo ./cfg/coco.data ./cfg/yolov4-custom.cfg /optyolov4.weights /opt/videos/traffic.mp4 -json_port 8070 -mjpeg_port 8090 -ext_output -dont_show
+
+# EOF
 ```
 
-![1647675742429](D:\document\CUHK\Notebooks\pics\1647675742429.png)
+![1647675742429](..\pics\1647675742429.png)

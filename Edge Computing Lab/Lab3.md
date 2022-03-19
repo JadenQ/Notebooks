@@ -1,4 +1,4 @@
-#### 1. 选择base image, Shopping from docker image.
+#### 1. Choose base image, shopping from docker image.
 
 Search 'cudnn', use arm64 architecture, ubuntu (18 more mature), development version.
 
@@ -15,6 +15,8 @@ sudo docker build -t docker-yolov4-cuda:v0.1
 ```
 
 #### 2. Build dockerfile.
+
+==Error== Limited latest version CUDA is 10.2 so current base image is not working, but the CPU version is OK.
 
 1. apt install: Read the image to read command easier to get  image from camera. To make it more readable, separate it into multiple lines.
 
@@ -42,6 +44,9 @@ cp /opt/videos/traffic.mp4 .
 ```shell
 FROM nvidia/cuda:11.5.1-cudnn8-devel-ubuntu18.04
 
+ENV TZ=Asia/Taipei
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 RUN apt update
 RUN apt install -y python3-opencv \ 
 				libopencv-dev \
@@ -49,8 +54,7 @@ RUN apt install -y python3-opencv \
 				git \
 				build-essential
 	
-ENV TZ=Asia/Taipei
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 
 RUN git clone --depth=1 https://github.com/AlexeyAB/darknet
 
@@ -65,7 +69,10 @@ COPY traffic.mp4 /opt/videos/traffic.mp4
 EXPOSE 8070
 EXPOSE 8090
 
+# GPU
 RUN make -j6 GPU=1 CUDNN=1 CUDNN_HALF=1 OPENCV=1
+# CPU
+# RUN make -j6 GPU=0 CUDNN=0 CUDNN_HALF=0 OPENCV=1
 
 CMD ./darknet detector demo ./cfg/coco.data ./cfg/yolov4-custom.cfg /optyolov4.weights /opt/videos/traffic.mp4 -json_port 8070 -mjpeg_port 8090 -ext_output -dont_show
 
@@ -77,7 +84,10 @@ CMD ./darknet detector demo ./cfg/coco.data ./cfg/yolov4-custom.cfg /optyolov4.w
 The path should be modified accordingly, when rebuild, the builder just use cache not rebuild all:
 
 ```shell
-sudo docker build --tag docker-yolo-cuda-cudnn:v1.0 ~/docker-yolov4-cuda
+# use GPU container
+sudo docker build --tag docker-yolo-cuda-cudnn:v1.0 .
+# change to cpu
+sudo docker build --tag docker-yolo-cuda-cudnn:v1.0-cpu .
 ```
 
 Check the image we built.
@@ -99,4 +109,19 @@ df -h
 docker image rmi docker-yolo-cuda-cudnn:v1.0-studentID
 ```
 
-#### 3.
+#### 3. Run the container
+
+CUDA version should not be later than the hardware, jetpack needs 10.2.
+
+```shell
+#docker run <tag>
+# run GPU
+# USE gpu, pass the information from GPU to the container, use nvidia runtime
+docker run --runtime nvidia --gpus all docker-yolo-cuda-cudnn:v1 --rm -it
+
+# run CPU version
+docker run docker-yolo-cuda-cudnn:v1.0-cpu
+
+docker run --publish 8070:8070 
+```
+

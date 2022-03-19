@@ -1,10 +1,10 @@
 #### 1. 选择base image, Shopping from docker image.
 
-1. search 'cudnn', use arm64 architecture, ubuntu (18 more mature), development version.
+Search 'cudnn', use arm64 architecture, ubuntu (18 more mature), development version.
 
-   'cudnn' is to speedup
+'cudnn' is to speedup
 
-   create file Dockerfile and input:
+create file Dockerfile and input:
 
 ```
 FROM nvidia/cuda:11.5.1-cudnn8-devel-ubuntu18.04
@@ -14,19 +14,20 @@ FROM nvidia/cuda:11.5.1-cudnn8-devel-ubuntu18.04
 sudo docker build -t docker-yolov4-cuda:v0.1
 ```
 
-2. Build dockerfile.
+#### 2. Build dockerfile.
 
-   Read the image to read command easier to get  image from camera. To make it more readable, separate it into multiple lines.
+1. apt install: Read the image to read command easier to get  image from camera. To make it more readable, separate it into multiple lines.
 
-   apt update: Update the link for the respository, domain name may change, need to update the correct mirror site.
+2. apt update: Update the link for the respository, domain name may change, need to update the correct mirror site.
 
-   WORKDIR:  to create a work folder and enter that folder.
+3. WORKDIR:  to create a work folder and enter that folder.
 
-   Download model and weights
+4. Download model and weights
 
-   Download YOLO config and '-O' *output* to ..., '-c' *continue* to run and get the resource if interrupted.
+5. Download YOLO config and '-O' *output* to ..., '-c' *continue* to run and get the resource if interrupted.
 
-   Copy video from local machine to container FS .
+6. Copy video from local machine to container FS .
+7. Expose to port. Port 8070 and 8090, connect to outside network. Map it to the port by default.
 
 ```shell
 FROM nvidia/cuda:11.5.1-cudnn8-devel-ubuntu18.04
@@ -48,6 +49,9 @@ RUN wget -c -N https://raw.githubusercontent.com/AlexeyAB/darknet/master/cfg/yol
 
 COPY /opt/videos/traffic.mp4 /opt/videos/traffic.mp4
 
+EXPOSE 8070
+EXPOSE 8090
 
 ```
 
+![1647675742429](D:\document\CUHK\Notebooks\pics\1647675742429.png)

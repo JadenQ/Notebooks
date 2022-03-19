@@ -31,7 +31,7 @@ sudo docker build -t docker-yolov4-cuda:v0.1
 8. 'j' how many core we want to use, check darknet parameters, GPU=1, CUDNN=1.
 9. CMD will run any program inside, we execute darknet
 10. Check darknet/cfg to see what labels this model can detect. Search the parameters from darknet page to know the explanations. './darknet' or 'darknet'
-11. Set environment variable of docker, specify the region in Dockerfile so container does not need to ask you to choose.
+11. Set environment variable of docker, specify the region to avoid location prompt from container.
 
 ```shell
 FROM nvidia/cuda:11.5.1-cudnn8-devel-ubuntu18.04
@@ -39,7 +39,7 @@ FROM nvidia/cuda:11.5.1-cudnn8-devel-ubuntu18.04
 RUN apt update
 
 ENV TZ=Asia/Taipei
-RUN ln -snf /usr/share/zonenano info/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt install -y python3-opencv \ 
 				libopencv-dev \

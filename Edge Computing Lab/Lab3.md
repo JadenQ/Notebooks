@@ -18,6 +18,12 @@ sudo docker build -t docker-yolov4-cuda:v0.1
 
 ==Error== Limited latest version CUDA is 10.2 so current base image is not working, but the CPU version is OK.
 
+==Solution?==： Use NVIDIA_DISABLE_REQUIRE = 1 to pass the version check.
+
+```shell
+docker run --runtime nvidia --gpus all --env NVIDIA_DISABLE_REQUIRE=1 --publish 8070:8070 --publish 8090:8090 docker-yolo-cuda-cudnn:v1.0-s1155161048
+```
+
 1. apt install: Read the image to read command easier to get  image from camera. To make it more readable, separate it into multiple lines.
 
 2. apt update: Update the link for the respository, domain name may change, need to update the correct mirror site.
@@ -53,8 +59,6 @@ RUN apt install -y python3-opencv \
 				wget \
 				git \
 				build-essential
-	
-
 
 RUN git clone --depth=1 https://github.com/AlexeyAB/darknet
 
@@ -117,11 +121,17 @@ CUDA version should not be later than the hardware, jetpack needs 10.2.
 #docker run <tag>
 # run GPU
 # USE gpu, pass the information from GPU to the container, use nvidia runtime
-docker run --runtime nvidia --gpus all docker-yolo-cuda-cudnn:v1 --rm -it
+docker run --runtime nvidia --gpus all --env NVIDIA_DISABLE_REQUIRE=1 --publish 8070:8070 --publish 8090:8090 docker-yolo-cuda-cudnn:v1.0-s1155161048
 
 # run CPU version
 docker run docker-yolo-cuda-cudnn:v1.0-cpu
+```
 
-docker run --publish 8070:8070 
+#### 4. Push the container
+
+```shell
+docker login
+docker push
+docker tag docker-yolo-cuda-cudnn:v1.0-gpu-s1155161048 jadenq/docker-
 ```
 

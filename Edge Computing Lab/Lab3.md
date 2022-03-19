@@ -86,6 +86,17 @@ Check the image we built.
 docker image ls
 ```
 
+Retag name, create just a pointer but will not create a whole new image to occupy the memory:
 
+```shell
+sudo docker tag docker-yolo-cuda-cudnn:v1.0 docker-yolo-cuda-cudnn:v1.0-studentID
+# check memory
+df -h
+```
+
+```shell
+# remove image
+docker image rmi docker-yolo-cuda-cudnn:v1.0-studentID
+```
 
 #### 3.

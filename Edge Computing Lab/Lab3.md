@@ -33,20 +33,25 @@ sudo docker build -t docker-yolov4-cuda:v0.1
 10. Check darknet/cfg to see what labels this model can detect. Search the parameters from darknet page to know the explanations. './darknet' or 'darknet'
 11. Set environment variable of docker, specify the region to avoid location prompt from container.
 
+Before building, move the resource mp4 file to this directory:
+
+```
+cp /opt/videos/traffic.mp4 .
+```
+
 ```shell
 FROM nvidia/cuda:11.5.1-cudnn8-devel-ubuntu18.04
 
 RUN apt update
-
-ENV TZ=Asia/Taipei
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
 RUN apt install -y python3-opencv \ 
 				libopencv-dev \
 				wget \
 				git \
 				build-essential
-				
+	
+ENV TZ=Asia/Taipei
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 RUN git clone --depth=1 https://github.com/AlexeyAB/darknet
 
 WORKDIR darknet
@@ -55,7 +60,7 @@ RUN wget -c -N https://github.com/AlexeyAB/darknet/releases/download/darknet_yol
 
 RUN wget -c -N https://raw.githubusercontent.com/AlexeyAB/darknet/master/cfg/yolov4.cfg -O /opt/yolov4.cfg
 
-COPY /opt/videos/traffic.mp4 /opt/videos/traffic.mp4
+COPY traffic.mp4 /opt/videos/traffic.mp4
 
 EXPOSE 8070
 EXPOSE 8090
@@ -68,6 +73,8 @@ CMD ./darknet detector demo ./cfg/coco.data ./cfg/yolov4-custom.cfg /optyolov4.w
 ```
 
 ![1647675742429](..\pics\1647675742429.png)
+
+The path should be modified accordingly, when rebuild, the builder just use cache not rebuild all:
 
 ```shell
 sudo docker build --tag docker-yolo-cuda-cudnn:v1.0 ~/docker-yolov4-cuda

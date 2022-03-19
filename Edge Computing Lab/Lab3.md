@@ -14,11 +14,13 @@ FROM nvidia/cuda:11.5.1-cudnn8-devel-ubuntu18.04
 sudo docker build -t docker-yolov4-cuda:v0.1
 ```
 
-#### 2. Build dockerfile.
+#### 2. Build Dockerfile.
 
 ==Error== Limited latest version CUDA is 10.2 so current base image is not working, but the CPU version is OK.
 
-==Solution?==： Use NVIDIA_DISABLE_REQUIRE = 1 to pass the version check.
+==Solution?==： Use NVIDIA_DISABLE_REQUIRE = 1 to pass the version check. ==Trying==
+
+==Solution?==: Find a container image that meets the needs of CUDA version. ==Trying==
 
 ```shell
 docker run --runtime nvidia --gpus all --env NVIDIA_DISABLE_REQUIRE=1 --publish 8070:8070 --publish 8090:8090 docker-yolo-cuda-cudnn:v1.0-s1155161048
@@ -83,13 +85,13 @@ CMD ./darknet detector demo ./cfg/coco.data ./cfg/yolov4-custom.cfg /optyolov4.w
 # EOF
 ```
 
-![1647675742429](..\pics\1647675742429.png)
+![1647675742429.png](..\pics\1647675742429.png)
 
 The path should be modified accordingly, when rebuild, the builder just use cache not rebuild all:
 
 ```shell
 # use GPU container
-sudo docker build --tag docker-yolo-cuda-cudnn:v1.0 .
+sudo docker build --tag docker-yolo-cuda-cudnn:v1.0-s1155161048 .
 # change to cpu
 sudo docker build --tag docker-yolo-cuda-cudnn:v1.0-cpu .
 ```

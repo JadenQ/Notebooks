@@ -46,7 +46,7 @@ RUN wget -c -N https://github.com/AlexeyAB/darknet/releases/download/darknet_yol
 
 RUN wget -c -N https://raw.githubusercontent.com/AlexeyAB/darknet/master/cfg/yolov4.cfg -O /opt/yolov4.cfg
 
-COPY /opt/videos/traffic.mp4
+COPY /opt/videos/traffic.mp4 /opt/videos/traffic.mp4
 
 
 ```

@@ -18,9 +18,9 @@ sudo docker build -t docker-yolov4-cuda:v0.1
 
 ==Error== Limited latest version CUDA is 10.2 so current base image is not working, but the CPU version is OK.
 
-==Solution?==： Use NVIDIA_DISABLE_REQUIRE = 1 to pass the version check. ==Trying==
+==Solution?== Use NVIDIA_DISABLE_REQUIRE = 1 to pass the version check. ==Trying==
 
-==Solution?==: Find a container image that meets the needs of CUDA version. ==Trying==
+==Solution?== Find a container image that meets the needs of CUDA version. ==Trying==
 
 ```shell
 docker run --runtime nvidia --gpus all --env NVIDIA_DISABLE_REQUIRE=1 --publish 8070:8070 --publish 8090:8090 docker-yolo-cuda-cudnn:v1.0-s1155161048
@@ -127,7 +127,12 @@ docker run --runtime nvidia --gpus all --env NVIDIA_DISABLE_REQUIRE=1 --publish 
 
 # run CPU version
 docker run docker-yolo-cuda-cudnn:v1.0-cpu
+
+# kill a container
+docker kill <container-ID>
 ```
+
+
 
 #### 4. Push the container
 

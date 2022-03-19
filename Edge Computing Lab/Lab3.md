@@ -63,3 +63,8 @@ CMD ./darknet detector demo ./cfg/coco.data ./cfg/yolov4-custom.cfg /optyolov4.w
 ```
 
 ![1647675742429](..\pics\1647675742429.png)
+
+```shell
+sudo docker build --tag docker-yolo-cuda-cudnn:v1.0 ~/docker-yolov4-cuda
+```
+

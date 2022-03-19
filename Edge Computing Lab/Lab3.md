@@ -28,6 +28,8 @@ sudo docker build -t docker-yolov4-cuda:v0.1
 
 6. Copy video from local machine to container FS .
 7. Expose to port. Port 8070 and 8090, connect to outside network. Map it to the port by default.
+8. 'j' how many core we want to use, check darknet parameters, GPU=1, CUDNN=1.
+9. CMD will run any program inside, we execute darknet
 
 ```shell
 FROM nvidia/cuda:11.5.1-cudnn8-devel-ubuntu18.04
@@ -52,6 +54,9 @@ COPY /opt/videos/traffic.mp4 /opt/videos/traffic.mp4
 EXPOSE 8070
 EXPOSE 8090
 
+RUN make -j6 GPU=1 CUDNN=1 CUDNN_HALF=1 OPENCV=1
+
+CMD ./darknet/
 ```
 
 ![1647675742429](D:\document\CUHK\Notebooks\pics\1647675742429.png)

@@ -80,3 +80,12 @@ The path should be modified accordingly, when rebuild, the builder just use cach
 sudo docker build --tag docker-yolo-cuda-cudnn:v1.0 ~/docker-yolov4-cuda
 ```
 
+Check the image we built.
+
+```shell
+docker image ls
+```
+
+
+
+#### 3.

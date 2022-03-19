@@ -85,7 +85,7 @@ CMD ./darknet detector demo ./cfg/coco.data ./cfg/yolov4-custom.cfg /optyolov4.w
 # EOF
 ```
 
-![1647675742429.png](..\pics\1647675742429.png)
+![1647675742429.png](../pics/1647675742429.png)
 
 The path should be modified accordingly, when rebuild, the builder just use cache not rebuild all:
 

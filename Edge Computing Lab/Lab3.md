@@ -23,7 +23,7 @@ sudo docker build -t docker-yolov4-cuda:v0.1
 ==Solution?== Find a container image that meets the needs of CUDA version. ==Trying==
 
 ```shell
-docker run --runtime nvidia --gpus all --env NVIDIA_DISABLE_REQUIRE=1 --publish 8070:8070 --publish 8090:8090 docker-yolo-cuda-cudnn:v1.0-s1155161048
+docker run --runtime nvidia --gpus all --env NVIDIA_DISABLE_REQUIRE=1 --publish 8070:8070 --publish 8090:8090 docker-yolo-cuda-cudnn:v1.0-studentID
 ```
 
 1. apt install: Read the image to read command easier to get  image from camera. To make it more readable, separate it into multiple lines.
@@ -91,7 +91,7 @@ The path should be modified accordingly, when rebuild, the builder just use cach
 
 ```shell
 # use GPU container
-sudo docker build --tag docker-yolo-cuda-cudnn:v1.0-s1155161048 .
+sudo docker build --tag docker-yolo-cuda-cudnn:v1.0-studentID .
 # change to cpu
 sudo docker build --tag docker-yolo-cuda-cudnn:v1.0-cpu .
 ```
@@ -123,22 +123,51 @@ CUDA version should not be later than the hardware, jetpack needs 10.2.
 #docker run <tag>
 # run GPU
 # USE gpu, pass the information from GPU to the container, use nvidia runtime
-docker run --runtime nvidia --gpus all --env NVIDIA_DISABLE_REQUIRE=1 --publish 8070:8070 --publish 8090:8090 docker-yolo-cuda-cudnn:v1.0-s1155161048
+docker run --runtime nvidia --gpus all --env NVIDIA_DISABLE_REQUIRE=1 --publish 8070:8070 --publish 8090:8090 docker-yolo-cuda-cudnn:v1.0-studentID-gpu
 
 # run CPU version
-docker run --publish 8070:8070 --publish 8090:8090 <IMAGE_ID>
+docker run --publish 8070:8070 --publish 8090:8090 docker-yolo-cuda-cudnn:v1.0-studentID-cpu
 
 # kill a container
 docker kill <container-ID>
 ```
 
+#### 4. Check the stream
 
+Streamhttp://xavier-nx-ip:8090/ using VLC media player.
+
+![1647787464296](../pics/1647787464296.png)
 
 #### 4. Push the container
 
-```shell
-docker login
-docker push
-docker tag docker-yolo-cuda-cudnn:v1.0-gpu-s1155161048 jadenq/docker-
+The image name to be pushed should be titled with dockerhub username.
+
 ```
+docker login
+docker tag docker-yolo-cuda-cudnn:v1.0-studentID-cpu jadenqi/docker-yolo-cuda-cudnn:v1.0-studentID-cpu
+docker image push jadenqi/docker-yolo-cuda-cudnn:v1.0-studentID-cpu
+```
+
+![1647790246042](../pics/1647790246042.png)
+
+#### 5. Export container image
+
+##### Export the container image
+
+```
+sudo docker save -o docker-yolo-cuda-cudnn:v1.0-studentID-cpu.tar docker-yolo-cuda-cudnn:v1.0-studentID-cpu
+```
+
+##### Share the file from edge node to google drive
+
+Change the owner of image file then we can have the privilege to manage it.
+
+```
+# root account
+chown studentID docker-yolo-cuda-cudnn:v1.0-studentID-cpu.tar
+```
+
+Use WinSCP or other gdrive to download/transfer the image file from server to google drive.
+
+The file share url is: ____
 

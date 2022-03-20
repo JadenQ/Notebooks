@@ -126,7 +126,7 @@ CUDA version should not be later than the hardware, jetpack needs 10.2.
 docker run --runtime nvidia --gpus all --env NVIDIA_DISABLE_REQUIRE=1 --publish 8070:8070 --publish 8090:8090 docker-yolo-cuda-cudnn:v1.0-s1155161048
 
 # run CPU version
-docker run docker-yolo-cuda-cudnn:v1.0-cpu
+docker run --publish 8070:8070 --publish 8090:8090 <IMAGE_ID>
 
 # kill a container
 docker kill <container-ID>

@@ -142,7 +142,7 @@ Streamhttp://xavier-nx-ip:8090/ using VLC media player.
 
 The image name to be pushed should be titled with dockerhub username.
 
-```
+```shell
 docker login
 docker tag docker-yolo-cuda-cudnn:v1.0-studentID-cpu jadenqi/docker-yolo-cuda-cudnn:v1.0-studentID-cpu
 docker image push jadenqi/docker-yolo-cuda-cudnn:v1.0-studentID-cpu
@@ -154,7 +154,7 @@ docker image push jadenqi/docker-yolo-cuda-cudnn:v1.0-studentID-cpu
 
 ##### Export the container image
 
-```
+```shell
 sudo docker save -o docker-yolo-cuda-cudnn:v1.0-studentID-cpu.tar docker-yolo-cuda-cudnn:v1.0-studentID-cpu
 ```
 
@@ -162,7 +162,7 @@ sudo docker save -o docker-yolo-cuda-cudnn:v1.0-studentID-cpu.tar docker-yolo-cu
 
 Change the owner of image file then we can have the privilege to manage it.
 
-```
+```shell
 # root account
 chown studentID docker-yolo-cuda-cudnn:v1.0-studentID-cpu.tar
 ```
@@ -171,3 +171,63 @@ Use WinSCP or other gdrive to download/transfer the image file from server to go
 
 The file share url is: ____
 
+#### 6. Extra: Try multi-stage build
+
+`Dockerfile`
+
+```shell
+FROM nvidia/cuda:11.5.1-cudnn8-devel-ubuntu18.04 AS builder
+
+ENV TZ=Asia/Taipei
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN apt update && \
+	apt install -y python3-opencv \ 
+				libopencv-dev \
+				wget \
+				git \
+				build-essential
+
+RUN git clone --depth=1 https://github.com/AlexeyAB/darknet
+
+WORKDIR darknet
+
+RUN wget -c -N https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.weights -O /opt/yolov4.weights && \
+	wget -c -N https://raw.githubusercontent.com/AlexeyAB/darknet/master/cfg/yolov4.cfg -O /opt/yolov4.cfg
+
+COPY traffic.mp4 /opt/videos/traffic.mp4
+
+EXPOSE 8070
+EXPOSE 8090
+
+# GPU
+# RUN make -j6 GPU=1 CUDNN=1 CUDNN_HALF=1 OPENCV=1
+# CPU
+RUN make -j6 GPU=0 CUDNN=0 CUDNN_HALF=0 OPENCV=1
+
+
+# multi-stage
+FROM nvidia/cuda:11.5.1-cudnn8-devel-ubuntu18.04
+
+COPY --from=builder /opt/ /opt/
+COPY --from=builder ./darknet .
+
+WORKDIR darknet
+
+CMD ./darknet detector demo ./cfg/coco.data ./cfg/yolov4-custom.cfg /optyolov4.weights /opt/videos/traffic.mp4 -json_port 8070 -mjpeg_port 8090 -ext_output -dont_show
+
+# EOF
+```
+
+```shell
+# build
+sudo docker build --tag docker-yolo-cuda-cudnn:v1.1-multi-studentID-cpu .
+# run
+docker run --publish 8070:8070 --publish 8090:8090 docker-yolo-cuda-cudnn:v1.1-multi-studentID-cpu
+# check size
+sudo docker image ls
+```
+
+![1647834175129](../pics/1647834175129.png)
+
+The original image is 7.8GB while the new image is 7.04GB. It can still be compressed by removing useless dependencies in the following stages.

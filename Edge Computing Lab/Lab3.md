@@ -80,7 +80,7 @@ RUN make -j6 GPU=1 CUDNN=1 CUDNN_HALF=1 OPENCV=1
 # CPU
 # RUN make -j6 GPU=0 CUDNN=0 CUDNN_HALF=0 OPENCV=1
 
-CMD ./darknet detector demo ./cfg/coco.data ./cfg/yolov4-custom.cfg /optyolov4.weights /opt/videos/traffic.mp4 -json_port 8070 -mjpeg_port 8090 -ext_output -dont_show
+CMD ./darknet detector demo ./cfg/coco.data ./cfg/yolov4-custom.cfg /opt/yolov4.weights /opt/videos/traffic.mp4 -json_port 8070 -mjpeg_port 8090 -ext_output -dont_show
 
 # EOF
 ```
@@ -183,7 +183,6 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt update && \
 	apt install -y python3-opencv \ 
-				libopencv-dev \
 				wget \
 				git \
 				build-essential
@@ -209,8 +208,14 @@ RUN make -j6 GPU=0 CUDNN=0 CUDNN_HALF=0 OPENCV=1
 # multi-stage
 FROM nvidia/cuda:11.5.1-cudnn8-devel-ubuntu18.04
 
+ENV TZ=Asia/Taipei
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN apt update && \
+	apt install -y libopencv-dev
+
 COPY --from=builder /opt/ /opt/
-COPY --from=builder ./darknet .
+COPY --from=builder ./darknet ./dark
 
 WORKDIR darknet
 
@@ -231,3 +236,4 @@ sudo docker image ls
 ![1647834175129](../pics/1647834175129.png)
 
 The original image is 7.8GB while the new image is 7.04GB. It can still be compressed by removing useless dependencies in the following stages.
+

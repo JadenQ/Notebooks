@@ -28,7 +28,7 @@ Use the code - **DEVOPS15** - while registering for the CKA or CKAD exams at Lin
 Master: manage, plan, schedule, monitor nodes
 
 - *ETCD*: key-value database to store the configuration
-- *kube-scheduler*: schedule resources from master to worker node
+- *kube-scheduler*: schedule resources from master to worker node. Bind pods to node.
 - *Controller-manager*
   - Node controller: on board new board to create and distroy
   - Replication controller: make sure the desired number of containers

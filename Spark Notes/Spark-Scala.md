@@ -120,3 +120,15 @@ spark-submit \
 ```shell
 cat pagerank.scala | spark-shell
 ```
+
+###### 4. Get data type
+
+```scala
+println(x.getClass)
+```
+
+```scala
+// 查看每列的datatype
+crimeDF.dtypes.foreach(f=>println(f._1+","+f._2))
+```
+

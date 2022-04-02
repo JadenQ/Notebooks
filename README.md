@@ -28,6 +28,8 @@
 
 [RDD](https://www.usenix.org/system/files/conference/nsdi12/nsdi12-final138.pdf), [Spark](https://www.usenix.org/legacy/event/hotcloud10/tech/full_papers/Zaharia.pdf), [SparkSQL](https://people.csail.mit.edu/matei/papers/2015/sigmod_spark_sql.pdf), [Spark Streaming](https://people.csail.mit.edu/matei/papers/2013/sosp_spark_streaming.pdf)
 
+[PSGraph-How Tencent trains extremely large graph with Spark.](https://conferences.computer.org/icde/2020/pdfs/ICDE2020-5acyuqhpJ6L9P042wmjY1p/290300b549/290300b549.pdf)
+
 ###### Project
 
 [project lists](https://www.yijiyong.com/da/rtaspark/09-summary.html)

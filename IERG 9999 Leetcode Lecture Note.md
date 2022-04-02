@@ -2907,3 +2907,93 @@ class Solution:
 ###### Pass
 
 ##### [173] [二叉搜索树迭代器](https://leetcode-cn.com/problems/binary-search-tree-iterator/)
+
+维护一个stack, 一个result.
+
+1. 向左节点查找最小值，如果还有左节点，就继续添加到stack.
+2. 从stack中弹出最后一个元素，弹出到答案（由于一直root.left,此时必然是最小值），查看是否有右节点，有右节点则继续遍历左节点。
+3. stack为空时无next
+
+```python
+class BSTIterator:
+
+    def __init__(self, root: TreeNode):
+        self.stack = []
+        while root:
+            self.stack.append(root)
+            root = root.left
+
+    def next(self) -> int:
+        cur = self.stack.pop()
+        node = cur.right
+        while node:
+            self.stack.append(node)
+            node = node.left
+        return cur.val
+
+    def hasNext(self) -> bool:
+        return len(self.stack) > 0
+```
+
+##### [230] 二叉搜索树中第K小的元素
+
+与173题类似。
+
+```python
+class Solution:
+    def kthSmallest(self, root: Optional[TreeNode], k: int) -> int:
+        self.stack = []
+        self.result = []
+        while root:
+            self.stack.append(root)
+            root = root.left
+
+        while len(self.stack) > 0:
+            cur = self.stack.pop()
+            self.result.append(cur.val)
+            node = cur.right
+            while node:
+                self.stack.append(node)
+                node = node.left
+
+        return self.result[k-1]
+```
+
+##### [99] 恢复二叉树
+
+###### 思路一 :warning: 
+
+二叉树中序遍历为数组，找到不一致的节点再恢复为二叉树。
+
+###### 思路二 
+
+找遍历数组中需要交换的部分，由于对于中序遍历，必然是递增。可以找遍历数组中的递减部分，取第一次下降的前节点a，第二次下降的后节点b，交换a,b的值。
+
+一直验证是否左节点大于根节点。
+
+```python
+class Solution:
+    def recoverTree(self, root: Optional[TreeNode]) -> None:
+        """
+        Do not return anything, modify root in-place instead.
+        """
+        self.pre = TreeNode(float("-inf"))
+        self.first = None
+        self.second = None
+
+        def inorder(root):
+            if not root: return
+            inorder(root.left)
+
+            if self.first == None and self.pre.val >= root.val:
+                self.first = self.pre
+            if self.first and self.pre.val >= root.val:
+                self.second = root
+            # 更新 当前指针
+            self.pre = root
+            inorder(root.right)
+
+        inorder(root)
+        self.first.val, self.second.val = self.second.val, self.first.val
+```
+

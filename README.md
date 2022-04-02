@@ -80,6 +80,16 @@
 
 [Video Collection](https://www.youtube.com/watch?v=jgpVdJB2sKQ&list=PLHBEBo5gzftysSgjL14l-aYYlAPYz0nWC)
 
+##### Java
+
+[Blog about Java concurrency](http://tutorials.jenkov.com/java-concurrency/index.html)
+
+[Concurrent Programming](https://www.coursera.org/learn/concurrent-programming-in-java/home/welcome)
+
+[Distributed Programming](https://www.coursera.org/learn/distributed-programming-in-java/home/welcome)
+
+[Parallel Programming](https://www.coursera.org/learn/parallel-programming-in-java/home/welcome)
+
 ##### Nginx
 
 [介绍与使用blog](http://www.imooc.com/wiki/)

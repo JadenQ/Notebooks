@@ -1,0 +1,43 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: opendatacam
+  name: opendatacam
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opendatacam
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: opendatacam
+        tier: frontend 
+    spec:
+      containers:
+      - image: opendatacam/opendatacam:v3.0.2-xavier
+        command: ["/bin/bash"]
+        args: ["-c", "/var/local/opendatacam/launch.sh"]
+        name: opendatacam
+        ports:
+        - containerPort: 8080
+        - containerPort: 8070
+        - containerPort: 8090
+        resources: {}
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /var/local/opendatacam/config.json
+          name: opendatacam-config
+          subPath: "config.json"
+      restartPolicy: Always
+      volumes:
+      - name: opendatacam-config
+        configMap:
+          name: opendatacam
+          items:
+            - key: config.json
+              path: config.json

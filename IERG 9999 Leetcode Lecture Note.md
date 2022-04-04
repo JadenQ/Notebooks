@@ -2997,3 +2997,200 @@ class Solution:
         self.first.val, self.second.val = self.second.val, self.first.val
 ```
 
+#### 字典树
+
+##### [208] 实现Trie（前缀树）
+
+空间换时间
+
+###### 静态语言思路
+
+C++，Java的思路一致，可以初始化一个数据结构记录26种children.
+
+```python
+class Trie(object):
+    class TrieNode(object):
+        def __init__(self):
+            self.is_word = Flase
+            self.children = [None] * 26
+    def __init__(self):
+        self.root = Trie.TrieNode()
+    
+    def insert(self, word):
+        """
+        Insert a word into trie,
+        type: 
+        	word: str
+        	rtype: void
+        """
+        p = self.root
+        for c in word:
+            index = ord(c) - ord('a')
+            if not p.children[index]:
+                # 这个字符不在子节点当中，新建一个节点
+                p.children[index] = Trie.TrieNode()
+            # 移动p到子节点
+            p = p.children[index]
+        # 已经达到结尾，在这个节点对象标注为True
+        p.is_word = True
+    
+    def find(self, prefix):
+        """
+        Returns the trie node that start with prefix，一个个字符地移动
+        , if no, return None
+        type:
+        	prefix: str
+        	rtype: TrieNode
+        """
+        p = self.root
+        for c in prefix:
+            index = ord(c) - ord('a')
+            if not p.children[index]:
+                return None
+            p = p.children[index]
+        return p
+    
+    def search(self, word):
+        """
+        Returns if the word is in the trie.
+        type:
+            word: str
+            rtype: bool
+        """
+        node = self.find(word)
+        return node is not None and node.is_word
+    
+    def startWith(self, prefix):
+        return self.find(prefix) is not None
+        
+```
+
+###### 动态语言的HashMap
+
+Python利用字典实现HashMap，字典可以嵌套字典，Python的字典是嵌套的数据结构，每个节点用一个新的字典表示。
+
+```python
+class Trie:
+
+    def __init__(self):
+        self.root = {}
+
+    def insert(self, word: str) -> None:
+        p = self.root
+        for c in word:
+            if c not in p:
+                # 创建一个新的节点
+                p[c] = {}
+            p = p[c]
+        # 为这个节点添加一个标记证明已经结束一个词
+        p['#'] = True
+
+    def find(self, prefix: str) -> dict:
+        p = self.root
+        for c in prefix:
+            if c not in p:
+                return None
+            p = p[c]
+        return p
+
+
+    def search(self, word: str) -> bool:
+        node = self.find(word)
+        return node is not None and '#' in node
+
+    def startsWith(self, prefix: str) -> bool:
+        node = self.find(prefix)
+        return node is not None
+```
+
+##### [720] 词典中最长的单词
+
+##### 解答1——审题错误
+
+返回了所有字符最小的结果。
+
+```python
+class Solution:
+
+    def longestWord(self, words: List[str]) -> str:
+        if words is None or len(words) == 0:
+            return ""
+        # 建立一个字典树
+        self.root = {}
+        self.result = ""
+
+        for word in words:
+            p = self.root
+            for c in word:
+                # 如果不在字典树中，开辟一个新节点
+                if c not in p:
+                    p[c] = {}
+                # 如果在字典树中，将指针移动
+                p = p[c]
+            # EOW
+            p['~'] = True
+
+        # 选择答案
+        def selectLeast(point: dict):
+            select = list(point.keys())
+            select.sort()
+            lstKey = select[0]
+            return lstKey
+        cur = self.root
+        # 按照最小词序遍历树
+        # 迈出第一步
+        startWith = selectLeast(cur)
+        cur = cur[startWith]
+        self.result = self.result + startWith
+        # 继续遍历所有结点
+        while cur and len(cur.keys()) > 1:
+            startWith = selectLeast(cur)
+            cur = cur[startWith]
+            self.result = self.result + startWith
+        return self.result
+```
+
+##### 解答2
+
+返回最长的word。
+
+```python
+class Solution:
+    def longestWord(self, words: List[str]) -> str:
+        if words is None or len(words) == 0:
+            return ""
+        # 建立一个字典树
+        self.root = {}
+        for word in words:
+            p = self.root
+            for c in word:
+                # 如果不在字典树中，开辟一个新节点
+                if c not in p:
+                    p[c] = {}
+                # 如果在字典树中，将指针移动
+                p = p[c]
+            # EOW
+            p['~'] = True
+        # 选择答案
+        result = ""
+        for word in words:
+            cur = self.root
+            # 循环打擂,长度更长或者相等长处时序号更小
+            if len(word) > len(result) or (len(word) == len(result) and word < result):
+                # if this word has every step for growing
+                isWord = True
+                # 检查是否每一步都在字典树中
+                for c in word:
+                    cur = cur[c]
+                    if '~' not in cur:
+                        isWord = False
+                        break
+                result = word if isWord else result
+        return result
+```
+
+##### [692] [前 K 个高频单词](https://leetcode-cn.com/problems/top-k-frequent-words/)
+
+##### [421] [数组中两个数的最大异或值](https://leetcode-cn.com/problems/maximum-xor-of-two-numbers-in-an-array/)
+
+##### [212] [单词搜索 II](https://leetcode-cn.com/problems/word-search-ii/)

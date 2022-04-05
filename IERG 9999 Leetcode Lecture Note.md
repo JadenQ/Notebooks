@@ -3191,6 +3191,93 @@ class Solution:
 
 ##### [692] [前 K 个高频单词](https://leetcode-cn.com/problems/top-k-frequent-words/)
 
+###### 同时根据Key和value两个条件排序
+
+字典的排序方法
+
+```python
+class Solution:
+    def topKFrequent(self, words: List[str], k: int) -> List[str]:
+        self.ctTable = {}
+        for word in words:
+            if word not in self.ctTable:
+                self.ctTable[word] = 0
+            else:
+                self.ctTable[word] = self.ctTable[word] + 1
+        # 按照key升序，按照value降序key = lambda item: (item[0], item[1])
+        sortedCTable = {k: (v+1) for k, v in sorted(self.ctTable.items(), key=lambda item: (-item[1], item[0]))}
+        ctTabKey = list(sortedCTable.keys())[:k]
+        return ctTabKey
+```
+
 ##### [421] [数组中两个数的最大异或值](https://leetcode-cn.com/problems/maximum-xor-of-two-numbers-in-an-array/)
+
+###### 暴力法
+
+超时
+
+```python
+class Solution:
+    def findMaximumXOR(self, nums: List[int]) -> int:
+        self.result = 0
+        for i in range(len(nums) - 1):
+            for j in range(i+1, len(nums)):
+                temp = nums[i] ^ nums[j]
+                if temp > self.result:
+                    self.result = temp
+        return self.result
+```
+
+###### 前缀树
+
+Num分解为二进制
+
+```python
+# for number num, 
+for i in range(L, -1, -1):
+	v = (num >> i) & 1
+	print(v)
+```
+
+思路：把所有数字分解为等高的branch，靠近子节点的地方为高位，一层层对比，找到有异或的一层用total = total*2+1,没有异或的一层只记录该层2阶次，即total = total * 2。
+
+```python
+class Trie:
+    def __init__(self, val):
+        self.val = val
+        self.child = {}
+class Solution:
+    def findMaximumXOR(self, nums: List[int]) -> int:
+        # 建树
+            # 最大深度
+        L = len(format(max(nums), 'b')) - 1
+            # 根节点
+        root = Trie(-1)
+        for num in nums:
+            cur = root
+            for i in range(L, -1, -1):
+                v = (num >> i) & 1
+                if v not in cur.child:
+                    cur.child[v] = Trie(v)
+                cur = cur.child[v]
+        # 遍历树获取结果
+        result = 0
+        for num in nums:
+            cur = root
+            # 如果有异或，计数,作为两个路径异或的结果
+            total = 0
+            for i in range(L, -1, -1):
+                v = (num >> i) & 1
+                # 如果这个节点的异或在这子节点里存在，走这一条路，并且利用total为该2阶层记1
+                if 1-v in cur.child:
+                    cur = cur.child[1-v]
+                    total = total * 2 + 1
+                # 否则走相同的非异或路径，这一层没有total计数，只算2的阶层
+                else:
+                    cur = cur.child[v]
+                    total = total * 2
+            result = max(result, total)
+        return result
+```
 
 ##### [212] [单词搜索 II](https://leetcode-cn.com/problems/word-search-ii/)

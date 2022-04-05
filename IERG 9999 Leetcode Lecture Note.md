@@ -3281,3 +3281,63 @@ class Solution:
 ```
 
 ##### [212] [单词搜索 II](https://leetcode-cn.com/problems/word-search-ii/)
+
+1. 将目标words存到trie当中
+2. 深度优先递归遍历table，在每一步对照trie，查看是否与前缀一致。如果不一致直接返回空值，如果一致则移动指针继续对照。
+3. 易错：0<tmp_i还是0<=tmp_i
+
+```python
+
+class Trie:
+    def __init__(self):
+        self.root = {}
+    def insert(self, word):
+        p = self.root
+        for c in word:
+            if c not in p:
+                p[c] = {}
+            p = p[c]
+        # 标记词的结束
+        p['~'] = 1
+
+class Solution:
+    def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
+        trie_obj = Trie()
+        trie = trie_obj.root
+        # 添加words到字典树
+        for word in words:
+            trie_obj.insert(word)
+
+        result = []
+        row = len(board)
+        col = len(board[0])
+        # 深度优先搜索
+        # 遍历table每一个点，并且每次都对照trie，如果和trie的前缀一致，就延申变量s作为结果存储。
+        def dfs(i, j, trie, s):
+            c = board[i][j]
+            # 对照字典树
+            # 如果字典树里面的值和board里面不符，直接返回空
+            if c not in trie:
+                return
+            # 如果board值出现在字典树，移动字典树
+            trie = trie[c]
+            if '~' in trie and trie['~'] == 1:
+                result.append(s + c)
+                trie['~'] = 0  # 销毁，防止重复加入
+            board[i][j] = '#'  # 销毁board，防止重复加入
+            # 在上下左右递归
+            for x, y in [[-1, 0], [1, 0], [0, 1], [0, -1]]:
+                tmp_i = x + i
+                tmp_j = y + j
+                if 0 <= tmp_i < row and 0 <= tmp_j < col and board[tmp_i][tmp_j] != '#':
+                    dfs(tmp_i, tmp_j, trie, s + c)
+            board[i][j] = c
+
+        for i in range(row):
+            for j in range(col):
+                dfs(i, j, trie, "")
+        return result
+```
+
+
+

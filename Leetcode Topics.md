@@ -64,6 +64,8 @@ class Solution {
 
 ##### 二分查找工具包
 
+Credit to this [link](https://www.liujiangblog.com/course/python/57).
+
 ```python
 """Bisection algorithms."""
 
@@ -131,7 +133,7 @@ except ImportError:
 
 对于存储了数值3，5的线段树，结果如下。[（引用来源）](https://www.bilibili.com/video/BV1QT4y1Z7rR?p=1)
 
-<img src="D:\document\CUHK\Notebooks\pics\1649403442358.png" alt="1649403442358" style="zoom:50%;" />
+<img src="/pics/1649403442358.png" alt="1649403442358" style="zoom:50%;" />
 
 ```python
 class segmentTree:

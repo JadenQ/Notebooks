@@ -3339,5 +3339,127 @@ class Solution:
         return result
 ```
 
+#### 线段树
 
+线段树的[原理与API](https://www.bilibili.com/video/BV1QT4y1Z7rR?spm_id_from=333.337.search-card.all.click) (插入insert, 查找search,打印print)
 
+##### [1353] [最多可以参加的会议数目](https://leetcode-cn.com/problems/maximum-number-of-events-that-can-be-attended/)
+
+###### 暴力求解
+
+$O(n^2)$
+
+```python
+class Solution:
+    def maxEvents(self, events: List[List[int]]) -> int:
+        events_sorted = sorted(events, key=(lambda x:x[1]) )
+        ans = 0
+        # 10^5 days
+        attend = [0 for _ in range(100001)]
+        for item in events_sorted:
+            for i in range(item[0], item[1]+1):
+                if attend[i]: continue
+                attend[i] = attend[i] + 1
+                ans = ans + 1
+                break
+        return ans
+```
+
+###### BTS平衡二叉树
+
+$O(n\times logn)$
+
+使用如下bisect_left自写的函数效率比较低，可以直接如第二段代码调用SortedList对象，能够AC。
+
+```python
+class Solution:
+    # 二分查找index
+    def bisect_left(self, a, x, lo=0, hi=None):
+        if lo < 0:
+            raise ValueError('lo must be non-negative')
+        if hi is None:
+            hi = len(a)
+        while lo < hi:
+            mid = (lo + hi) // 2
+            if a[mid] < x:
+                lo = mid + 1
+            else:
+                hi = mid
+        return lo
+
+    def maxEvents(self, events: List[List[int]]) -> int:
+        # rank according to the end day
+        events.sort(key=(lambda x:x[1]))
+        min_range = min(days_pair[0] for days_pair in events)
+        max_range = events[-1][1]
+        # get the range of attendance
+        days = [day for day in range(min_range, max_range+1)]
+        ans = 0
+        for start, end in events:
+            index = self.bisect_left(days, start)
+            # the case that this event can't make it
+            # 趕不上咯
+            if index == len(days) or days[index] > end:
+                continue
+            else:
+                del days[index]
+                ans = ans + 1
+        return ans
+```
+
+```python
+class Solution:
+    def maxEvents(self, events: List[List[int]]) -> int:
+        from sortedcontainers import SortedList
+
+        events.sort(key=lambda val_list: val_list[1])
+        first_day = min(days_pair[0] for days_pair in events)
+        last_day = events[-1][1]
+
+        array = [val for val in range(first_day, last_day + 1)]
+        sl = SortedList(array)
+        # print(sl)
+
+        res = 0
+        for start_date, end_date in events:
+            index = sl.bisect_left(start_date)
+            #print('index: ', index)
+            #print('len(sl), sl[index], end_date:', len(sl), sl[index], end_date)
+            if index == len(sl) or sl[index] > end_date:
+                #print('continue')
+                continue
+            else:
+                del sl[index]
+                #print('days remain:', sl)
+                res += 1
+
+        return res
+```
+
+###### 堆
+
+```
+
+```
+
+##### [307] [区域和检索 - 数组可修改](https://leetcode-cn.com/problems/range-sum-query-mutable/)
+
+```
+
+```
+
+##### [315] [计算右侧小于当前元素的个数](https://leetcode-cn.com/problems/count-of-smaller-numbers-after-self/)
+
+```
+
+```
+
+### 栈
+
+#### 基础栈
+
+#### 单调栈
+
+### 堆
+
+### 二分查找

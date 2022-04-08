@@ -3444,9 +3444,86 @@ class Solution:
 
 ##### [307] [区域和检索 - 数组可修改](https://leetcode-cn.com/problems/range-sum-query-mutable/)
 
+###### Mistakes
+
+1. 边界条件： 左子树包含Mid节点: index <= mid
+
+2. mid = s + (e - s) // 2 而不是 (s + (e - s)) // 2
+
+```python
+class NumArray:
+
+    # 初始化时构建一个线段树，令每个节点是子节点的和
+    def __init__(self, nums: List[int]):
+        n = len(nums)
+        self.n = n
+        self.segTree = [0] * (n * 4)
+        self.build(0, nums, 0, n-1)
+        # print(self.segTree)
+    '''
+    构建一个线段树
+    pos: 线段树数组记录self.segTree节点的index,作为树上移动的指针
+    nums: 要建树的原始数据
+    s, e: 在原始数据的左右指针
+    '''
+    def build(self, pos, nums, s, e):
+        # 到达叶子节点
+        if s == e:
+            self.segTree[pos] = nums[e]
+            return
+        mid = s + (e - s) // 2
+        # 左子树
+        self.build(pos * 2 + 1, nums, s, mid)
+        # 右子树
+        self.build(pos * 2 + 2, nums, mid + 1, e)
+        # 子节点关系
+        self.segTree[pos] = self.segTree[pos * 2 + 1] + self.segTree[pos * 2 + 2]
+
+    '''
+    修改nums中index位置处的值为val
+    DFS遍历
+    '''
+    def change(self, pos, index, val, s, e):
+        if s == e:
+            self.segTree[pos] = val
+            return
+        mid = s + (e - s) // 2
+        # 左子树, 移动树指针
+        if index <= mid:
+            self.change(pos * 2 + 1, index, val, s, mid)
+        else:
+            self.change(pos * 2 + 2, index, val, mid + 1, e)
+        self.segTree[pos] = self.segTree[pos * 2 + 1] + self.segTree[pos * 2 + 2]
+    '''
+    计算range
+    left: start of range
+    right: end of range
+    s: 左指针
+    e: 右指针
+    '''
+    def range(self, pos, left, right, s, e):
+        if s == left and e == right:
+            return self.segTree[pos]
+        mid = s + (e - s) // 2
+        # 只在左子树
+        if right <= mid:
+            return self.range(pos * 2 + 1, left, right, s, mid)
+        # 只在右子树
+        if left > mid:
+            return self.range(pos * 2 + 2, left, right, mid + 1, e)
+        # 跨越左右子树
+        return self.range(pos * 2 + 1, left, mid, s, mid) + self.range(pos * 2 + 2, mid + 1, right, mid + 1, e)
+
+    def update(self, index: int, val: int) -> None:
+        # print(self.segTree)
+        self.change(0, index, val, 0, self.n - 1)
+
+    def sumRange(self, left: int, right: int) -> int:
+        # print(self.segTree)
+        return self.range(0, left, right, 0, self.n - 1)
 ```
 
-```
+
 
 ##### [315] [计算右侧小于当前元素的个数](https://leetcode-cn.com/problems/count-of-smaller-numbers-after-self/)
 

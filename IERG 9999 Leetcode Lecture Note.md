@@ -3539,4 +3539,37 @@ class NumArray:
 
 ### 堆
 
+##### 笔试题
+
+[任务调度（字节）](https://www.nowcoder.com/practice/f7efb182b285403a84c10ee4e6f6075a)
+
+```shell
+import sys
+import heapq as hq
+
+# o = input().split()
+# n, m, p = int(o[0]), int(o[1]), int(o[2])
+# task = []
+# for i in range(p):
+#     tmp = [int(x) for x in input().split()]
+#     task.append((tmp[1], tmp[2],tmp[3], i))
+n, m, p = 2, 2, 5
+task = [[1,1,2,0],
+       [2,1,1,1],[3,2,2,2],[1,1,2,3],[3,5,5,4]]
+
+res = [-1] * p
+ptime = [0] * m
+hq.heapify(task)
+# print(task)
+for i in range(p):
+    start, order, time, idx = hq.heappop(task)
+    # use this ptime heap to always get the shortest time idea
+    pro = hq.heappop(ptime)
+    res[idx] = max(start, pro) + time
+    hq.heappush(ptime, res[idx])
+print(*res,sep = '\n')
+```
+
+
+
 ### 二分查找

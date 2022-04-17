@@ -1709,6 +1709,16 @@ class Solution:
 
 ##### 基础Recap:bookmark:
 
+###### 树的数据结构
+
+```python
+ class TreeNode:
+     def __init__(self, val=0, left=None, right=None):
+         self.val = val
+         self.left = left
+         self.right = right
+```
+
 ###### DFS
 
 前序遍历：根结点 ---> 左子树 ---> 右子树

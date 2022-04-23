@@ -12,6 +12,8 @@
 
 [Book collections](https://github.com/justjavac/free-programming-books-zh_CN)
 
+[Projects Video](https://tech.souyunku.com/?p=49915)
+
 #### Big Data
 
 ##### Book

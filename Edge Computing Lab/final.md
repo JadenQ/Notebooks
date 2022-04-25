@@ -2,7 +2,7 @@
 
 #### Step1 - Install dependencies ​[:link:](https://github.com/dusty-nv/jetson-containers)
 
-0. The current version of JetPack
+##### 0. The current version of JetPack
 
 ```shell
 sudo apt-cache show nvidia-jetpack
@@ -31,9 +31,9 @@ JetPack 4.6 (L4T R32.6.1)
 		torchaudio v0.8.0
 ```
 
-1. [Deploy](https://github.com/dusty-nv/jetson-containers) a container with PyTorch on NVIDIA Jetpack.
+##### 1. [Deploy](https://github.com/dusty-nv/jetson-containers) a container with PyTorch on NVIDIA Jetpack.
 
-##### Try1: Build a image by ourselves.
+###### Try1: Build a image by ourselves.
 
 Change`/etc/docker/daemon.json` configuration file before attempting to build the containers:
 
@@ -72,7 +72,7 @@ cd jetson-containers
 ./scripts/docker_build_ml.sh all
 ```
 
-##### Try2: Run built image from docker
+###### Try2: Run built image from docker
 
 ```shell
 git clone https://github.com/dusty-nv/jetson-containers
@@ -87,15 +87,15 @@ sudo docker pull nvcr.io/nvidia/l4t-pytorch:r32.6.1-pth1.8-py3
 sudo docker run -it --rm --runtime nvidia --network host nvcr.io/nvidia/l4t-pytorch:r32.6.1-pth1.8-py3
 ```
 
-###### Problems :bookmark_tabs:
+###### Problems of Try2 :bookmark_tabs:
 
-:rocket: Failed: 
+P​ro​b​l​em​1:rocket::
 
 ```
 docker: Error response from daemon: failed to create shim: OCI runtime create failed: container_linux.go:380: starting container process caused: error adding seccomp filter rule for syscall clone3: permission denied: unknown.
 ```
 
-:tea: [Downgrade](https://forums.developer.nvidia.com/t/docker-containers-wont-run-after-recent-apt-get-upgrade/194369/2) docker from ~~20.10.7-0ubuntu5\~18.04.3~~ to 20.10.7-0ubuntu5\~18.04.2 
+<u>S​o​lu​ti​on​1:tea:</u>: [Downgrade](https://forums.developer.nvidia.com/t/docker-containers-wont-run-after-recent-apt-get-upgrade/194369/2) docker from ~~20.10.7-0ubuntu5\~18.04.3~~ to 20.10.7-0ubuntu5\~18.04.2 
 
 https://launchpad.net/ubuntu/bionic/arm64/docker.io/20.10.7-0ubuntu5~18.04.2
 
@@ -106,7 +106,9 @@ wget https://launchpad.net/~ubuntu-security/+archive/ubuntu/ppa/+build/22232428/
 sudo apt install ./containerd_1.5.2-0ubuntu1~18.04.3_arm64.deb
 ```
 
-2. Install other dependencies in container.
+<u>Solution1</u> not working.
+
+##### 2. Install other dependencies in container.
 
 ```
 

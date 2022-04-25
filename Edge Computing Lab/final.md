@@ -40,7 +40,7 @@ Change`/etc/docker/daemon.json` configuration file before attempting to build th
 From original file:
 
 ```json
-}
+{
     "runtimes": {
         "nvidia": {
             "path": "nvidia-container-runtime",
@@ -95,7 +95,7 @@ sudo docker run -it --rm --runtime nvidia --network host nvcr.io/nvidia/l4t-pyto
 docker: Error response from daemon: failed to create shim: OCI runtime create failed: container_linux.go:380: starting container process caused: error adding seccomp filter rule for syscall clone3: permission denied: unknown.
 ```
 
-:tea: [Downgrade](https://forums.developer.nvidia.com/t/docker-containers-wont-run-after-recent-apt-get-upgrade/194369/2) docker from 20.10.7-0ubuntu5~18.04.3 to 20.10.7-0ubuntu5~18.04.2 
+:tea: [Downgrade](https://forums.developer.nvidia.com/t/docker-containers-wont-run-after-recent-apt-get-upgrade/194369/2) docker from ~~20.10.7-0ubuntu5\~18.04.3~~ to 20.10.7-0ubuntu5\~18.04.2 
 
 https://launchpad.net/ubuntu/bionic/arm64/docker.io/20.10.7-0ubuntu5~18.04.2
 

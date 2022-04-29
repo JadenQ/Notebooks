@@ -1,20 +1,18 @@
 ### Final Project
 
-#### Step1 - Build container based on opendatacam ​[:link:](https://github.com/dusty-nv/jetson-containers)
+#### Step1 - Build container based on opendatacam [:link:](https://hub.docker.com/layers/opendatacam/opendatacam/opendatacam/v3.0.2-xavier/images/sha256-ccf5e813e80103548c4bf9e5447ebc9028838e9e4e981a4e7d87e37fce93273c?context=explore)
 
 ```dockerfile
 FROM opendatacam/opendatacam:v3.0.2-xavier
-
-COPY animals.mp4 /var/local/darknet/opendatacam_videos
-
+COPY animals.mp4 /var/local/darknet/opendatacam_videos/animals.mp4
 CMD ./launch.sh
 ```
 
 ```shell
-sudo docker build --tag animal-detect:v1.0-cpu .
+sudo docker build --tag animal-detect:v1.2 .
 sudo docker login
-sudo docker tag animal-detect:v1.0 jadenqi/animal-detect:v1.0
-sudo docker image push jadenqi/animal-detect:v1.0
+sudo docker tag animal-detect:v1.2 jadenqi/animal-detect:v1.2
+sudo docker image push jadenqi/animal-detect:v1.2
 ```
 
 #### Step2 - Configure the opendatacam
@@ -134,7 +132,7 @@ spec:
         tier: frontend 
     spec:
       containers:
-      - image: jadenqi/animal-detect:v1.0
+      - image: jadenqi/animal-detect:v1.2
         command: ["/bin/bash"]
         args: ["-c", "/var/local/opendatacam/launch.sh"]
         name: opendatacam

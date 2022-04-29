@@ -206,3 +206,4 @@ kubectl delete svc opendatacam
 kubectl delete svc opendatacam-mongo
 ```
 
+![1651244643634](../pics/1651244643634.png)

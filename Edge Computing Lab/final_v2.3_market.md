@@ -115,6 +115,8 @@ kubectl apply -f config.yaml
 
 #### Step3 - YAML files
 
+##### YAML file for OpendataCam
+
 `opendatacam-deployment.yaml`
 
 ```yaml
@@ -185,7 +187,83 @@ spec:
   type: LoadBalancer
 ```
 
-Deployment of mongo is the same as given.
+##### YAML file for mongoDB
+
+`opendatacam-mongo-pvc.yaml`
+
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongodb-pv-claim
+  labels:
+    app: opendatacam
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+```
+
+`opendatacam-mongo-deployment.yaml`
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: opendatacam
+  name: opendatacam-mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opendatacam
+      tier: mongo
+  template:
+    metadata:
+      labels:
+        app: opendatacam
+        tier: mongo
+    spec:
+      containers:
+      - image: mongo
+        name: mongo
+        ports:
+        - containerPort: 27017
+        resources: {}
+        volumeMounts:
+        - mountPath: /data/db
+          name: mongodb-persistent-storage
+      restartPolicy: Always
+      volumes:
+      - name: mongodb-persistent-storage
+        persistentVolumeClaim:
+          claimName: mongodb-pv-claim
+```
+
+`opendatacam-mongo-service.yaml`
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: opendatacam
+  name: opendatacam-mongo
+spec:
+  ports:
+  - name: "27017"
+    port: 27017
+    targetPort: 27017
+  selector:
+    app: opendatacam
+    tier: mongo
+  type: ClusterIP
+```
+
+##### Deploy
 
 `deployments.sh`
 
@@ -207,3 +285,10 @@ kubectl delete svc opendatacam
 kubectl delete svc opendatacam-mongo
 ```
 
+![1651244806700](../pics/1651244806700.png)
+
+![1651244846575](../pics/1651244846575.png)
+
+![1651244865589](../pics/1651244865589.png)
+
+![1651244885849](../pics/1651244885849.png)

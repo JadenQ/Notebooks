@@ -4,15 +4,15 @@
 
 ```dockerfile
 FROM opendatacam/opendatacam:v3.0.2-xavier
-COPY bird.mp4 /var/local/darknet/opendatacam_videos/bird.mp4
+COPY more_animals.mp4 /var/local/darknet/opendatacam_videos/more_animals.mp4
 CMD ./launch.sh
 ```
 
 ```shell
-sudo docker build --tag animal-detect:v1.4 .
+sudo docker build --tag animal-detect:v1.5 .
 sudo docker login
-sudo docker tag animal-detect:v1.4 jadenqi/animal-detect:v1.4
-sudo docker image push jadenqi/animal-detect:v1.4
+sudo docker tag animal-detect:v1.5 jadenqi/animal-detect:v1.5
+sudo docker image push jadenqi/animal-detect:v1.5
 ```
 
 #### Step2 - Configure the opendatacam
@@ -27,7 +27,7 @@ data:
       "VIDEO_INPUT": "file",
       "NEURAL_NETWORK": "yolov4",
       "VIDEO_INPUTS_PARAMS": {
-        "file": "opendatacam_videos/bird.mp4",
+        "file": "opendatacam_videos/more_animals.mp4",
         "usbcam": "v4l2src device=/dev/video0 ! video/x-raw, framerate=30/1, width=640, height=360 ! videoconvert ! appsink",
         "raspberrycam": "nvarguscamerasrc ! video/xraw(memory:NVMM),width=1280, height=720, framerate=30/1, format=NV12 ! nvvidconv ! video/x-raw, format=BGRx, width=640, height=360 ! videoconvert ! video/x-raw, format=BGR ! appsink", "remote_cam": "YOUR IP CAM STREAM (can be .m3u8, MJPEG ...), anything supported by opencv",
         "remote_hls_gstreamer": "souphttpsrc location=http://YOUR_HLSSTREAM_URL_HERE.m3u8 ! hlsdemux ! decodebin ! videoconvert ! videoscale ! appsink"
@@ -45,11 +45,11 @@ data:
       "VALID_CLASSES": ["*"],
       "DISPLAY_CLASSES": [
         { "class": "bird", "hexcode": "1F426"},
-        { "class": "chicken", "hexcode": "1F414"},
-        { "class": "duck", "hexcode": "1F986"},
-        { "class": "dove", "hexcode": "1F54A"},
-        { "class": "eagle", "hexcode": "1F985"},
-        { "class": "rooster", "hexcode": "1F413"}
+        { "class": "cat", "hexcode": "1F414"},
+        { "class": "sheep", "hexcode": "1F986"},
+        { "class": "bear", "hexcode": "1F54A"},
+        { "class": "horse", "hexcode": "1F985"},
+        { "class": "cow", "hexcode": "1F413"}
       ],
       "PATHFINDER_COLORS": [
         "#1f77b4",
@@ -105,7 +105,7 @@ data:
 kind: ConfigMap
 metadata:
   creationTimestamp: null
-  name: opendatacam-bird
+  name: opendatacam-wild
 ```
 
 ```shell
@@ -136,7 +136,7 @@ spec:
         tier: frontend 
     spec:
       containers:
-      - image: jadenqi/animal-detect:v1.3
+      - image: jadenqi/animal-detect:v1.5
         command: ["/bin/bash"]
         args: ["-c", "/var/local/opendatacam/launch.sh"]
         name: opendatacam
@@ -155,7 +155,7 @@ spec:
       volumes:
       - name: opendatacam-config
         configMap:
-          name: opendatacam-bird
+          name: opendatacam-wild
 ```
 
 `opendatacam-service.yaml`

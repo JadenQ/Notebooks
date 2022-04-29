@@ -10,6 +10,13 @@ COPY animals.mp4 /var/local/darknet/opendatacam_videos
 CMD ./launch.sh
 ```
 
+```shell
+sudo docker build --tag animal-detect:v1.0-cpu .
+sudo docker login
+sudo docker tag animal-detect:v1.0 jadenqi/animal-detect:v1.0
+sudo docker image push jadenqi/animal-detect:v1.0
+```
+
 #### Step2 - Configure the opendatacam
 
 ```json
@@ -109,9 +116,9 @@ sudo docker tag animals:v1.0 jadenqi/animal-detect:v1.0
 sudo docker image push jadenqi/animal-detect:v1.0
 ```
 
-
-
 #### Step3 - YAML files
+
+`opendatacam-deployment.yaml`
 
 ```yaml
 apiVersion: apps/v1
@@ -133,7 +140,7 @@ spec:
         tier: frontend 
     spec:
       containers:
-      - image: jadenqi/animal-detect
+      - image: jadenqi/animal-detect:v1.0
         command: ["/bin/bash"]
         args: ["-c", "/var/local/opendatacam/launch.sh"]
         name: opendatacam
@@ -158,7 +165,52 @@ spec:
               path: config.json
 ```
 
+`opendatacam-service.yaml`
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: opendatacam
+  name: opendatacam
+spec:
+  ports:
+  - name: "8070"
+    port: 8070
+    targetPort: 8070
+  - name: "8090"
+    port: 8090
+    targetPort: 8090
+  - name: "8080"
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: opendatacam
+    tier: frontend
+  type: LoadBalancer
 ```
 
+Deployment of mongo is the same as given.
+
+`deployments.sh`
+
+```
+kubectl apply -f opendatacam-deployment.yaml
+kubectl apply -f opendatacam-service.yaml
+kubectl apply -f opendatacam-mongo-pvc.yaml
+kubectl apply -f opendatacam-mongo-deployment.yaml
+kubectl apply -f opendatacam-mongo-service.yaml
+
+kubectl get svc
+```
+
+`stop-deployments.sh`
+
+```
+kubectl delete deployment opendatacam
+kubectl delete deployment opendatacam-mongo
+kubectl delete svc opendatacam
+kubectl delete svc opendatacam-mongo
 ```
 

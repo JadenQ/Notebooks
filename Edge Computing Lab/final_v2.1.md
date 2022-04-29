@@ -105,15 +105,9 @@ sudo docker image push jadenqi/animal-detect:v1.0
 ```
 
 ```shell
-kubectl create configmap opendatacam --from-file=config.json --dry-run -o yaml | kubectl apply -f -
+kubectl create configmap opendatacam-animal --from-file=config.json --dry-run -o yaml | kubectl apply -f -
 # check
 kubectl get configmap
-```
-
-```shell
-sudo docker login
-sudo docker tag animals:v1.0 jadenqi/animal-detect:v1.0
-sudo docker image push jadenqi/animal-detect:v1.0
 ```
 
 #### Step3 - YAML files

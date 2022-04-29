@@ -137,6 +137,7 @@ Solution2 works.
 
    ```shell
    sudo pip3 install tqdm cython pycocotools
+   sudo apt-get update
    sudo apt-get install python3-matplotlib
    ```
 

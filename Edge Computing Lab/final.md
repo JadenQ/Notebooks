@@ -80,7 +80,7 @@ cd jetson-containers
 scripts/docker_run.sh -c nvcr.io/nvidia/l4t-pytorch:r32.6.1-pth1.8-py3
 ```
 
-************************************************************************************************************************************************************************OR**************************************************************************************************************************************************************
+***************************************************************************************************************************OR**************************************************************************************************************************************************************
 
 ```shell
 sudo docker pull nvcr.io/nvidia/l4t-pytorch:r32.6.1-pth1.8-py3
@@ -141,12 +141,57 @@ Solution2 works.
    sudo apt-get install python3-matplotlib
    ```
 
+Dockerfile
+
+```shell
+FROM nvcr.io/nvidia/l4t-pytorch:r32.6.1-pth1.8-py3
+COPY gesture1.mp4 /var/local/darknet/opendatacam_videos/gesture1.mp4
+
+RUN apt update
+RUN apt install -y python3-opencv \ 
+				libopencv-dev \
+				git \
+				wget \
+				python3-matplotlib \
+				build-essential
+
+RUN git clone https://github.com/NVIDIA-AI-IOT/torch2trt
+WORKDIR torch2trt && python3 setup.py install --plugins
+
+WORKDIR /
+RUN pip3 install tqdm cython pycocotools
+
+RUN git clone https://github.com/NVIDIA-AI-IOT/trt_pose
+WORKDIR trt_pose && python3 setup.py install
+
+RUN wget https://drive.google.com/open?id=1XYDdCUdiF2xxx4rznmLb62SdOUZuoNbd
+
+CMD ./launch.sh
 ```
 
+##### Other Solution
+
+Use opendatacam as base image and darknet as model framework.
+
+https://github.com/gaohan01/Gesture_recognition
+
+```shell
+FROM opendatacam/opendatacam:v3.0.2-xavier
+COPY gesture.mp4 /var/local/darknet/opendatacam_videos/gesture.mp4
+
+RUN mkdir gesture
+COPY yolo-voc_final.weights /var/local/darknet/gesture/
+CMD ./launch.sh
 ```
 
+Setup config.yaml based on:
 
+```
+cfg/voc.data 
+cfg/yolov3-voc.cfg
+gesture/yolov3-voc_final.weights
+```
 
-#### Step2 - Install trt_pose
+#### Step 3 - Front-End Service
 
-#### Step 3 - Run the example notebook
+#### Step4 - Deploy on K8S

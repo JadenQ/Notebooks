@@ -10,10 +10,10 @@ CMD ./launch.sh
 ```
 
 ```shell
-sudo docker build --tag animal-detect:v1.7 .
+sudo docker build --tag market-detect:v1.7 .
 sudo docker login
-sudo docker tag animal-detect:v1.7 jadenqi/animal-detect:v1.7
-sudo docker image push jadenqi/animal-detect:v1.7
+sudo docker tag market-detect:v1.7 jadenqi/market-detect:v1.7
+sudo docker image push jadenqi/market-detect:v1.7
 ```
 
 #### Step2 - Configure the opendatacam
@@ -139,7 +139,7 @@ spec:
         tier: frontend 
     spec:
       containers:
-      - image: jadenqi/animal-detect:v1.7
+      - image: jadenqi/market-detect:v1.7
         command: ["/bin/bash"]
         args: ["-c", "/var/local/opendatacam/launch.sh"]
         name: opendatacam

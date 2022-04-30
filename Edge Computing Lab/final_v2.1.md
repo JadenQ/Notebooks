@@ -136,7 +136,7 @@ spec:
         tier: frontend 
     spec:
       containers:
-      - image: jadenqi/animal-detect:v1.3
+      - image: jadenqi/animal-detect:v1.4
         command: ["/bin/bash"]
         args: ["-c", "/var/local/opendatacam/launch.sh"]
         name: opendatacam

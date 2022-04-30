@@ -164,9 +164,7 @@ RUN pip3 install tqdm cython pycocotools
 RUN git clone https://github.com/NVIDIA-AI-IOT/trt_pose
 WORKDIR trt_pose && python3 setup.py install
 
-RUN wget https://drive.google.com/open?id=1XYDdCUdiF2xxx4rznmLb62SdOUZuoNbd
-
-CMD ./launch.sh
+# need to run front end service to output the result
 ```
 
 ##### Other Solution

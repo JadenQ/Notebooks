@@ -291,4 +291,8 @@ kubectl delete svc opendatacam-mongo
 
 ![1651244865589](../pics/1651244865589.png)
 
+<img src="D:\document\CUHK\Notebooks\pics\GIF1.gif" alt="GIF1" style="zoom: 80%;" />
+
+<img src="D:\document\CUHK\Notebooks\pics\GIF4.gif" alt="GIF4" style="zoom:80%;" />
+
 ![1651244885849](../pics/1651244885849.png)

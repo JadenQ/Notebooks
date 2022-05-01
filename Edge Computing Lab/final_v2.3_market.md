@@ -1,4 +1,48 @@
-### Final Project
+# Final Project
+
+## Introduction
+
+We implemented two projects, at the upper half of the week, we worked on gesture detection work and encountered the following [problems](https://shimo.im/docs/erAdPZ79pDH5LXAG/). Then we start a new project based on OpendataCam called Pick up and Go, which is a customer flow and popular food detection project to empower retail stores for more sales with business intelligence. 
+
+## Project1 - Pick up and Go - Customer Flow and Popular Food Detection in Retail Store
+
+### Background and Key Elements
+
+#### Background
+
+Retail stores receive millions of visitors every year. The primary objective of a store is to **attract visitors and make sales**. However, this constant stream of traffic can be leveraged to create an alternate source of value for retailers. You can collect traffic data and **extract key retail analytics** from it. Based on the information collected from our project, you can **create a lot of sales opportunities and optimize store operations**.
+
+#### Definitions
+
+*Customer Traffic*: visitor traffic and purchase traffic
+
+##### Where to set the cameras
+
+- **Entrance of the store** – Collect visitor traffic and street traffic
+
+- **Cashier** – Collect purchase traffic data
+
+- **Shelves** – Theft protection
+
+#### Key Elements
+
+- **Peak/off-peak periods**
+
+- **Draw-in rate & Purchase rate**
+
+  - Draw-in rate: **Visitor traffic / Street traffic**
+
+    Combined pedestrians traffic data and visitor traffic data collected from the entrance of store, to determine the draw in rate of store. – How appealing is your store to the pass-bys.
+
+    <img src="C:\Users\Jaden\AppData\Roaming\Typora\typora-user-images\1651372767723.png" alt="1651372767723" style="zoom: 67%;" />
+
+  - Purchase rate: **Purchase traffic / Visitor traffic**
+
+    Combine the traffic data of **cashier** and traffic data in **store –** How many customers want to buy after entering your store.
+
+    <img src="C:\Users\Jaden\AppData\Roaming\Typora\typora-user-images\1651372786776.png" alt="1651372786776" style="zoom: 50%;" />
+
+### Implementation
 
 #### Step1 - Build container based on opendatacam [:link:](https://hub.docker.com/layers/opendatacam/opendatacam/opendatacam/v3.0.2-xavier/images/sha256-ccf5e813e80103548c4bf9e5447ebc9028838e9e4e981a4e7d87e37fce93273c?context=explore)
 
@@ -296,3 +340,20 @@ kubectl delete svc opendatacam-mongo
 <img src="../pics/GIF4.gif" alt="GIF4" style="zoom:80%;" />
 
 ![1651244885849](../pics/1651244885849.png)
+
+### Future Work
+
+Find better models to:
+
+1. Differentiate more feature of customers
+
+   ​	Gender, Age, Occupation…
+
+2. Differentiate more kinds of products/foods
+
+   ​	More than Hot dog, cake, chips, coffee etc.
+
+## Project2 - Gesture Detection
+
+
+

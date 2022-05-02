@@ -4,7 +4,7 @@
 
 We implemented two projects, at the upper half of the week, we worked on gesture detection work and encountered the following [problems](https://shimo.im/docs/erAdPZ79pDH5LXAG/). Then we start a new project based on OpendataCam called Pick up and Go, which is a customer flow and popular food detection project to empower retail stores for more sales with business intelligence. 
 
-## Project1 - Pick up and Go - Customer Flow and Popular Food Detection in Retail Store
+## Project1 - Pick up and Go: Customer Flow and Popular Food Detection in Retail Store
 
 ### Background and Key Elements
 
@@ -353,36 +353,38 @@ Find better models to:
 
    ​	More than Hot dog, cake, chips, coffee etc.
 
-## Project2 - Gesture Detection
+## Project2 - Understand in Silent: Hand Gesture Recognition
+
+#### Introduction
+
+We also propose a Hand Gesture Recognition application aiming at helping people with disabilities in speaking and listening to understand each other in silent, since the model is still have room to improve, we currently present a presentation that can only recognize gestures that indicating numbers.
 
 #### Step1 - Build container Image
 
-Use opendatacam as base image and darknet as model framework.
+Use opendatacam as base image and darknet as model framework, we find a new model from GitHub and implement it.
 
-https://github.com/gaohan01/Gesture_recognition
+https://github.com/ShahrozTanveer/Hand-Gestures-Recognition, this is a **customized model** based on YOLO-v3 that is very fast in detection hand gesture inference.
 
 ```shell
 FROM opendatacam/opendatacam:v3.0.2-xavier
 COPY gesture.mp4 /var/local/darknet/opendatacam_videos/gesture.mp4
 
-RUN apt update
-RUN apt install -y python3-opencv \
-                   git
-
-RUN pip3 install numpy
-
-RUN git clone 
-
 RUN mkdir gesture
-COPY yolo-voc_final.weights /var/local/darknet/gesture/
+
+COPY yolov3_custom_last.weights /var/local/darknet/gesture/
+
+COPY ./Hand-Gestures-Recognition/Yolo/obj.data /var/local/darknet/cfg
+COPY ./Hand-Gestures-Recognition/Yolo/yolov3_custom.cfg /var/local/darknet/cfg
+COPY ./Hand-Gestures-Recognition/Yolo/obj.names /var/local/darknet/data
+
 CMD ./launch.sh
 ```
 
 ```shell
-sudo docker build --tag gesture-detect:v1.1 .
+sudo docker build --tag gesture-detect:v1.9 .
 sudo docker login
-sudo docker tag gesture-detect:v1.2 jadenqi/gesture-detect:v1.2
-sudo docker image push jadenqi/gesture-detect:v1.2
+sudo docker tag gesture-detect:v1.9 jadenqi/gesture-detect:v1.9
+sudo docker image push jadenqi/gesture-detect:v1.9
 ```
 
 Check out the running container.
@@ -391,11 +393,7 @@ Check out the running container.
 docker exec -i -t 93c94xxxxx /bin/bash
 ```
 
-Setup config.yaml based on:
-
-cfg/voc.data 
-cfg/yolov3-voc.cfg
-gesture/yolov3-voc_final.weights
+Here we configure the model to use `yolov3-custom`.
 
 ```yaml
 apiVersion: v1
@@ -405,7 +403,7 @@ data:
       "OPENDATACAM_VERSION": "3.0.2",
       "PATH_TO_YOLO_DARKNET" : "/var/local/darknet",
       "VIDEO_INPUT": "file",
-      "NEURAL_NETWORK": "yolov3-voc",
+      "NEURAL_NETWORK": "yolov3-custom",
       "VIDEO_INPUTS_PARAMS": {
         "file": "opendatacam_videos/gesture.mp4",
         "usbcam": "v4l2src device=/dev/video0 ! video/x-raw, framerate=30/1, width=640, height=360 ! videoconvert ! appsink",
@@ -462,9 +460,14 @@ data:
           "weights": "yolov4-tiny.weights"
         },
         "yolov3-voc":{
-          "data": "cfg/voc.data ",
-          "cfg": "cfg/yolov3-voc.cfg",
-          "weights": "gesture/yolov3-voc_final.weights"
+         "data": "cfg/voc.data",
+         "cfg": "cfg/yolov3-voc.cfg",
+         "weights": "gesture/yolov3-voc_final.weights"
+        },
+        "yolov3-custom":{
+          "data": "cfg/obj.data",
+          "cfg": "cfg/yolov3_custom.cfg",
+          "weights": "gesture/yolov3_custom_last.weights"
         }
       },
       "TRACKER_ACCURACY_DISPLAY": {
@@ -493,3 +496,62 @@ metadata:
   name: opendatacam-gesture
 ```
 
+#### Step2 - YAML files
+
+##### YAML file for OpendataCam
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: opendatacam
+  name: opendatacam
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opendatacam
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: opendatacam
+        tier: frontend 
+    spec:
+      containers:
+      - image: jadenqi/gesture-detect:v1.9
+        command: ["/bin/bash"]
+        args: ["-c", "/var/local/opendatacam/launch.sh"]
+        name: opendatacam
+        ports:
+        - containerPort: 8080
+        - containerPort: 8070
+        - containerPort: 8090
+        resources: {}
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /var/local/opendatacam/config.json
+          name: opendatacam-config
+          subPath: "config.json"
+      restartPolicy: Always
+      volumes:
+      - name: opendatacam-config
+        configMap:
+          name: opendatacam-gesture
+```
+
+##### YAML files for MongoDB
+
+The YAML file is the same as Project1, so we choose skip this part.
+
+#### Deployment and Result
+
+Since the **result of Project1 was shown on class** presentation, so we choose to **deploy Project2 using K8s** and keep it running for you to check the running result. You can see the result using this address (with): http://192.168.85.67:30391.
+
+![GIF](../pics/gif_gesture.gif)
+
+<img src="C:\Users\Jaden\AppData\Roaming\Typora\typora-user-images\1651463800831.png" alt="1651463800831" style="zoom: 50%;" />
+
+The online version of this report is on this link.

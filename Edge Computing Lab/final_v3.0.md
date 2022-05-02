@@ -1,8 +1,10 @@
-# Final Project
+# Group 17 - Final Project
 
 ## Introduction
 
-We implemented two projects, at the upper half of the week, we worked on gesture detection work and encountered the following [problems](https://shimo.im/docs/erAdPZ79pDH5LXAG/). Then we start a new project based on OpendataCam called Pick up and Go, which is a customer flow and popular food detection project to empower retail stores for more sales with business intelligence. 
+We implemented two projects, at the upper half of the week, we worked on hand gesture recognition work and encountered the following [problems](https://shimo.im/docs/erAdPZ79pDH5LXAG/). Then we start a new project based on OpendataCam called Pick up and Go, which is a customer flow and popular food detection project to empower retail stores for more sales with business intelligence. And finally, we carry on with the gesture recognition work and implemented new model to make it work on this address: http://192.168.85.67:30391.
+
+Group member of group 17: Qi Jiadun, Li Yonghui, Tian Hao, Hong Ziyang.
 
 ## Project1 - Pick up and Go: Customer Flow and Popular Food Detection in Retail Store
 
@@ -554,4 +556,6 @@ Since the **result of Project1 was shown on class** presentation, so we choose t
 
 <img src="C:\Users\Jaden\AppData\Roaming\Typora\typora-user-images\1651463800831.png" alt="1651463800831" style="zoom: 50%;" />
 
-The online version of this report is on this link.
+### Conclusion
+
+We start with gesture recognition project but encountered many problems, so we start a new project called 'Pick up and Go' to try to use simple technology and directly use OpendataCam container image to inference and provide many strategies including draw-in rate and purchase rate, to empower the retail stores with business intelligence. After class demonstration, we continue working on the gesture recognition project we left, we implemented new model on the based on darknet framework to make this work, however, this model is now not powerful enough to help deaf-mute people to communicate only based on hand gesture. More models need to be trained to help in this area.

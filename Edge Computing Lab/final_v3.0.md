@@ -554,7 +554,7 @@ Since the **result of Project1 was shown on class** presentation, so we choose t
 
 ![GIF](../pics/gif_gesture.gif)
 
-<img src="C:\Users\Jaden\AppData\Roaming\Typora\typora-user-images\1651463800831.png" alt="1651463800831" style="zoom: 50%;" />
+<img src="../pics/1651463800831.png" alt="1651463800831" style="zoom: 50%;" />
 
 ### Conclusion
 

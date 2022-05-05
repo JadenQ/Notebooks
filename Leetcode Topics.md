@@ -24,21 +24,25 @@ public int[] twoSum(int[] nums, int target){
 
 ###### [560] 等于K的连续子序列
 
+参考： [this link](https://leetcode-cn.com/problems/subarray-sum-equals-k/solution/python3-by-wu-qiong-sheng-gao-de-qia-non-w6jw/).
+
 思路与 路径总和 III 一致。
 
-**[超出时间限制]**
+**[AC]**
 
 ```python
+import collections
 class Solution:
     def subarraySum(self, nums: List[int], k: int) -> int:
-        prefix = collections.defaultdict(int)
-        sum_, res = 0, 0
-        prefix[0] = 1
-        for i in range(len(nums)):
-            sum_ += nums[i]
-            if sum_ - k in list(prefix.keys()):
-                res += prefix[sum_ - k]
-            prefix[sum_] += 1
+        n = len(nums)
+        res = 0
+        preSums = collections.defaultdict(int)
+        preSums[0] = 1
+        presum = 0
+        for i in range(n):
+            presum += nums[i]
+            res += preSums.get(presum - k,0)
+            preSums[presum] += 1
         return res
 ```
 
@@ -291,4 +295,58 @@ class Trie:
         node = self.find(prefix)
         return node is not None
 ```
+
+#### Topic 5 子序列问题
+
+##### 974. 和可被K整除的子数组
+
+使用同余定理，如果两个整数a - b mod k == 0, 则a  mod k == b mod k, 反之也成立。因此简化了过程，不用计算前缀和之间的两两只差，可以直接统计 item1 **mod** k == item2 **mod** k 的个数，利用哈希表（字典）实现。
+
+```python
+class Solution:
+    def subarraysDivByK(self, nums: List[int], k: int) -> int:
+        record = {0:1}
+        total, ans = 0, 0
+        for item in nums:
+            total += item
+            modulus = total % k
+            # 如果没有添加过，identical计数为0， 如果添加过，返回之前的记录
+            identical = record.get(modulus, 0)
+            ans += identical
+            # 为这一个具有相同模结果下的Key添加一个计数
+            record[modulus] = identical + 1
+        return ans
+```
+
+##### 560. 等于K的连续子序列
+
+见 前缀和主题。
+
+##### 两数之和 - 变体
+
+给定一个序列nums, 两数之和为target的子序列的个数。
+
+##### 674. 最长连续递增子序列
+
+```python
+class Solution:
+    def findLengthOfLCIS(self, nums: List[int]) -> int:
+        ans = 0
+        start = 0
+        for i in range(len(nums)):
+            if i > 0 and nums[i] <= nums[i-1]:
+                start = i
+            ans = max(ans, i - start + 1)
+        return ans
+```
+
+##### 1027. 最长等差子序列
+
+
+
+##### 845. 数组中的最长山脉
+
+##### 978. 最长湍流子数组
+
+#### Topic6 排序问题
 

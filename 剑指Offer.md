@@ -1,3 +1,10 @@
+### Unsolved Problems
+
+1. 最长回文子序列
+2. 最长公共子序列
+3. 股票买卖问题总结
+4. 台阶问题总结
+
 ### Day1
 
 #### [剑指 Offer 09. 用两个栈实现队列](https://leetcode.cn/problems/yong-liang-ge-zhan-shi-xian-dui-lie-lcof/)
@@ -497,8 +504,48 @@ class Solution:
 
 f(0) = 1, f(1) = 1, f(2) = 2, f(3) = 3, f(4) = 5
 
-```
+```python
 class Solution:
-	
+    def numWays(self, n: int) -> int:
+        a, b = 1, 1
+        for _ in range(n):
+            a, b = b, a + b
+        return a % 1000000007
+# or
+class Solution:
+    def numWays(self, n: int) -> int:
+        if n <= 1: return 1
+        dp = [-1 for _ in range(n+1)]
+        dp[0], dp[1] = 1, 1
+        for i in range(2, n+1):
+            dp[i] = dp[i-1] + dp[i-2]
+            dp[i] = dp[i] % 1000000007
+        return dp[n]
+```
+
+#### [剑指 Offer 63. 股票的最大利润](https://leetcode.cn/problems/gu-piao-de-zui-da-li-run-lcof/)
+
+```python
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:    
+        n = len(prices)
+        if n <= 1: return 0
+        dp = [0 for _ in range(n)]
+        dp[0] = 0
+        for i in range(1, n):
+            dp[i] = max((prices[i] - min(prices[:i])), dp[i-1])
+        return dp[n-1]
+```
+
+更快：因为不用每次都从数组找min。
+
+```python
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        cost, profit = float("+inf"), 0
+        for price in prices:
+            cost = min(cost, price)
+            profit = max(profit, price - cost)
+        return profit
 ```
 

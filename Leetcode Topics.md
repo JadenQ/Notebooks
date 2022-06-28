@@ -342,11 +342,53 @@ class Solution:
 
 ##### 1027. 最长等差子序列
 
-
-
 ##### 845. 数组中的最长山脉
 
 ##### 978. 最长湍流子数组
 
 #### Topic6 排序问题
 
+#### Topic7 棋盘类
+
+##### [79. 单词搜索](https://leetcode.cn/problems/word-search/)
+
+```python
+class Solution:
+    
+    def exist(self, board: List[List[str]], word: str) -> bool:
+        n, m = len(board), len(board[0])
+        # 边界条件
+        if n == 0 or n * m < len(word): return False
+        # 标记矩阵
+        mark = [[0 for _ in range(m)] for _ in range(n)]
+        for i in range(n):
+            for j in range(m):
+                if board[i][j] == word[0]:
+                    # 标记已经用过的坐标
+                    mark[i][j] = 1
+                    if self.backtrace(i, j, mark, word[1:], board) == True:
+                        return True
+                    else:
+                        mark[i][j] = 0
+        return False
+    # 回溯
+    def backtrace(self, i, j, mark, word, board):
+        if len(word) == 0: return True
+        # right, left, up, down
+        directions = [(0,1), (0,-1), (1,0), (-1,0)]
+        n, m = len(board), len(board[0])
+        
+        for direc in directions:
+            cur_i = i + direc[0]
+            cur_j = j + direc[1]
+            if cur_i >= 0 and cur_i < n and cur_j >= 0 and cur_j < m and board[cur_i][cur_j] == word[0]:
+                if mark[cur_i][cur_j] == 1:
+                    continue
+                mark[cur_i][cur_j] = 1
+                if self.backtrace(cur_i, cur_j, mark, word[1:], board) == True:
+                    return True
+                else:
+                    # 回溯
+                    mark[cur_i][cur_j] = 0
+        return False
+```

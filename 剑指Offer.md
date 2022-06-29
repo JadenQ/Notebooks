@@ -549,3 +549,51 @@ class Solution:
         return profit
 ```
 
+#### [剑指 Offer 42. 连续子数组的最大和](https://leetcode.cn/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/)
+
+```python
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        if len(nums) == 1: return nums[0]
+        ans, max_sum = float("-inf"), 0
+        for i in range(0,len(nums)):
+            max_sum = max(max_sum + nums[i], nums[i])
+            ans = max(max_sum, ans)
+        return ans
+```
+
+#### [剑指 Offer 47. 礼物的最大价值](https://leetcode.cn/problems/li-wu-de-zui-da-jie-zhi-lcof/)
+
+```python
+class Solution:
+    def maxValue(self, grid: List[List[int]]) -> int:
+        if not grid: return 0
+        directions = [(0,1), (1,0)]
+        n, m = len(grid), len(grid[0])
+        for i in range(n):
+            for j in range(m):
+                if i == 0 and j == 0: continue
+                if i == 0: grid[i][j] += grid[i][j - 1]
+                elif j == 0: grid[i][j] += grid[i - 1][j]
+                else:
+                    grid[i][j] += max(grid[i][j - 1], grid[i - 1][j])
+        return grid[-1][-1]
+```
+
+边界简化
+
+```python
+class Solution:
+    def maxValue(self, grid: List[List[int]]) -> int:
+        n, m = len(grid), len(grid[0])
+        for i in range(1, n):
+            grid[i][0] += grid[i - 1][0]
+        for j in range(1, m):
+            grid[0][j] += grid[0][j - 1]
+
+        for i in range(1, n):
+            for j in range(1, m):
+                grid[i][j] += max(grid[i - 1][j], grid[i][j - 1])
+        return grid[-1][-1]
+```
+

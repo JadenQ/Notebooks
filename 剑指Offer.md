@@ -723,3 +723,135 @@ class Solution:
         return s[start:start+max_len]
 ```
 
+#### [最长公共子序列——动态规划补充](https://leetcode.cn/problems/qJnOS7/)
+
+![1659506437371](./pics/1659506437371.png)
+
+```python
+class Solution:
+    def longestCommonSubsequence(self, text1: str, text2: str) -> int:
+        m, n = len(text1), len(text2)
+        dp = [[0 for _ in range(n+1)] for _ in range(m+1)]
+        for i in range(1, m+1):
+            for j in range(1, n+1):
+                if text1[i - 1] == text2[j - 1]:
+                    dp[i][j] = dp[i - 1][j - 1] + 1
+                else:
+                    dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])
+        return dp[m][n]
+```
+
+### 台阶问题
+
+
+
+### Day11
+
+#### [剑指 Offer 18. 删除链表的节点](https://leetcode.cn/problems/shan-chu-lian-biao-de-jie-dian-lcof/)
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+class Solution:
+    def deleteNode(self, head: ListNode, val: int) -> ListNode:
+        if head.val == val: return head.next
+        pre, cur = head, head.next
+        while cur and cur.val != val:
+            pre, cur = cur, cur.next
+        if cur: pre.next = cur.next
+        return head
+```
+
+#### [剑指 Offer 22. 链表中倒数第k个节点](https://leetcode.cn/problems/lian-biao-zhong-dao-shu-di-kge-jie-dian-lcof/)
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def getKthFromEnd(self, head: ListNode, k: int) -> ListNode:
+        pre = head
+        length = 0
+        while pre:
+            pre = pre.next
+            length += 1
+        pre = head
+        while length - k > 0:
+            length -= 1
+            pre = pre.next
+        return pre
+
+```
+
+### Day12
+
+#### [剑指 Offer 25. 合并两个排序的链表](https://leetcode.cn/problems/he-bing-liang-ge-pai-xu-de-lian-biao-lcof/)
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+class Solution:
+    def mergeTwoLists(self, l1: ListNode, l2: ListNode) -> ListNode:
+        cur = dummy = ListNode(-1)
+        while l1 and l2:
+            if l1.val > l2.val:
+                cur.next = l2
+                l2 = l2.next
+            else:
+                cur.next = l1
+                l1 = l1.next
+            cur = cur.next
+        cur.next = l1 if l1 else l2
+        return dummy.next
+```
+
+### Day14
+
+#### [剑指 Offer 12. 矩阵中的路径](https://leetcode.cn/problems/ju-zhen-zhong-de-lu-jing-lcof/)
+
+```python
+class Solution:    
+    def exist(self, board: List[List[str]], word: str) -> bool:
+        def dfs(i, j, k):
+            if not 0 <= i < len(board) or not 0<= j < len(board[0]) or board[i][j] != word[k]: 
+                return False
+            if k == len(word) - 1: return True
+            # 修改board为空防止重复访问
+            board[i][j] = ''
+            res = dfs(i+1, j, k+1) or dfs(i, j+1, k+1) or dfs(i-1, j, k+1) or dfs(i, j-1, k+1)
+            # 将board改回word[k],进入该条件必然board[i][j]与word[k]相等
+            board[i][j] = word[k]
+            return res
+        
+        for i in range(len(board)):
+            for j in range(len(board[0])):
+                if dfs(i, j, 0):
+                    return True
+        return False
+```
+
+
+
+
+
+#### [剑指 Offer II 088. 爬楼梯的最少成本](https://leetcode.cn/problems/GzCJIP/)
+
+```python
+class Solution:
+    def minCostClimbingStairs(self, cost: List[int]) -> int:
+        n = len(cost)
+        dp = [0] * (n + 1)
+        for i in range(2, n+1):
+            dp[i] = min(dp[i-1]+cost[i-1], dp[i-2]+cost[i-2])
+        return dp[-1]
+```
+

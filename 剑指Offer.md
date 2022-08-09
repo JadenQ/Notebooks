@@ -4,6 +4,7 @@
 2. 最长公共子序列
 3. 股票买卖问题总结
 4. 台阶问题总结
+5. 二维坐标两个点走格子走法数量
 
 ### Day1
 
@@ -814,6 +815,91 @@ class Solution:
         return dummy.next
 ```
 
+#### [剑指 Offer 52. 两个链表的第一个公共节点](https://leetcode.cn/problems/liang-ge-lian-biao-de-di-yi-ge-gong-gong-jie-dian-lcof/)
+
+```python
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def getIntersectionNode(self, headA: ListNode, headB: ListNode) -> ListNode:
+        pt1, pt2 = headA, headB
+        while pt1 != pt2:
+            pt1 = pt1.next if pt1 else headB
+            pt2 = pt2.next if pt2 else headA
+        return pt1
+```
+
+### Day13
+
+#### [剑指 Offer 21. 调整数组顺序使奇数位于偶数前面](https://leetcode.cn/problems/diao-zheng-shu-zu-shun-xu-shi-qi-shu-wei-yu-ou-shu-qian-mian-lcof/)
+
+```
+class Solution:
+    def exchange(self, nums: List[int]) -> List[int]:
+        l1 = []
+        l2 = []
+        for item in nums:
+            if item % 2 == 0:
+                l2.append(item)
+            else: l1.append(item)
+        return l1 + l2
+```
+
+#### [剑指 Offer 57. 和为s的两个数字](https://leetcode.cn/problems/he-wei-sde-liang-ge-shu-zi-lcof/)
+
+```python
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        i, j = 0, len(nums) - 1
+        while i < j:
+            sumTwo = nums[i] + nums[j]
+            if sumTwo < target:
+                i = i + 1
+            elif sumTwo > target:
+                j = j - 1
+            else:
+                return nums[i], nums[j]
+        return []
+        
+```
+
+#### [剑指 Offer 58 - I. 翻转单词顺序](https://leetcode.cn/problems/fan-zhuan-dan-ci-shun-xu-lcof/)
+
+```python
+class Solution:
+    def reverseWords(self, s: str) -> str:
+        start = 0
+        words = []
+        char = list(s)
+        word = ''
+        if s == " ": return ""
+        if len(s) < 2:
+            return s
+        if len(s) == 2 and char[0] == ' ' and char[1] != ' ':
+            return char[1]
+        for i in range(len(char) - 1):
+            if char[i] != ' ':
+                if char[i+1] == ' ':
+                    word = word + char[i]
+                    words.append(word)
+                    word = ''
+                elif (i+1) == len(char)-1:
+                    word = word + char[i] + char[i + 1]
+                    words.append(word)
+                    word = ''
+                elif char[i+1] != ' ':
+                    word = word + char[i]
+            else:
+                continue
+        words.reverse()
+        return ' '.join(words)
+        
+```
+
 ### Day14
 
 #### [剑指 Offer 12. 矩阵中的路径](https://leetcode.cn/problems/ju-zhen-zhong-de-lu-jing-lcof/)
@@ -839,9 +925,66 @@ class Solution:
         return False
 ```
 
+#### [面试题13. 机器人的运动范围](https://leetcode.cn/problems/ji-qi-ren-de-yun-dong-fan-wei-lcof/)
 
+难点：如何判断是否能够连同到其他符合条件的区域？
 
+```python
+# not solving this problem
+class Solution:
+    def movingCount(self, m: int, n: int, k: int) -> int:
+        def getDigitsSum(d1, d2):
+            s1 = str(d1)
+            s2 = str(d2)
+            dSum1 = 0
+            dSum2 = 0
+            for item in list(s1):
+                dSum1 = dSum1 + int(item)
+            for item in list(s2):
+                dSum2 = dSum2 + int(item)
+            return dSum1 + dSum2]
+        if k == 0: return 1
+        digitSums = []
+        count = 0
+        for i in range(m):
+            for j in range(n):
+                digitSum = getDigitsSum(i,j)
+                if digitSum <= k:
+                    digitSums.append((i, j))
+                else:
+                    continue
+        for item in digitSums:
+            if (item[0]+1, item[1]) not in digitSums and (item[0], item[1]+1) not in digitSums:
+                digitSums.remove(item)
+            else:
+                continue
+        return len(digitSums)
+```
 
+##### DFS
+
+**深度优先搜索**： 可以理解为暴力法模拟机器人在矩阵中的所有路径。DFS 通过递归，先朝一个方向搜到底，再回溯至上个节点，沿另一个方向搜索，以此类推。
+**剪枝**： 在搜索中，遇到数位和超出目标值、此元素已访问，则应立即返回，称之为`可行性剪枝` 。
+
+如果下一步还有可用空间，探索+1。
+
+```python
+class Solution:
+    def movingCount(self, m: int, n: int, k: int) -> int:
+        def digitSum(x):
+            s = 0
+            while x != 0:
+                s += x % 10
+                x = x // 10
+            return s
+        def dfs(i, j, si, sj):
+            if i >= m or j >= n or k < si + sj or (i, j) in visited: return 0
+            visited.add((i,j))
+            return 1 + dfs(i+1, j, digitSum(i+1), digitSum(j)) + dfs(i, j+1, digitSum(i), digitSum(j+1))
+        
+        visited = set()
+        return dfs(0,0,0,0)
+```
 
 #### [剑指 Offer II 088. 爬楼梯的最少成本](https://leetcode.cn/problems/GzCJIP/)
 
